@@ -180,9 +180,70 @@
       if (record.sourceKind === "Official website") return "<span class=\"tag\">Tec Centro website</span>";
       return "<span class=\"tag\">TCB program guide</span>";
     }
+    function isNoiseRecord(record) {
+      const raw=String(record.text||"").trim();
+      const body=norm(raw);
+      const titleText=norm(record.title);
+      const words=body.split(" ").filter(Boolean);
+      if (!body || !/[a-z0-9]/i.test(raw)) return true;
+      if (raw.includes("|") && words.length<14 && !/[.!?]/.test(raw)) return true;
+      if (record.sourceKind==="Program guide" && /INTERNAL STAFF REFERENCE|REORGANIZED EDITION/i.test(raw)) return true;
+      if (body!==titleText) return false;
+      if (/^(?:\d+(?:\.\d+)*\s|step\s+\d+)/i.test(raw)) return true;
+      if (/^when\b/i.test(raw) && !/\b(must|should|needs? to|have to|repeat|do not|contact|document|complete|upload|submit|follow)\b/i.test(raw)) return true;
+      const action=/^(?:do not|don't|never|add|assign|call|check|choose|click|complete|confirm|copy|create|delete|document|download|email|enter|ensure|follow|go|hit|include|leave|make|mark|move|navigate|notify|open|paste|press|provide|record|remove|repeat|review|save|search|select|send|set|submit|scroll|transfer|type|update|upload|use|verify|wait|withdraw|return|read|fill)\b/i;
+      const guidance=/\b(must|should|may|will|need to|is required|are required|have to|to be used|there are|the following|the only|only able|are expected|is expected|is important|important that|repeat|click|submit|upload|document|contact|complete|the answers you enter)\b/i;
+      if (action.test(raw) && words.length>=3) return false;
+      if (/[.!?]["')\]]?$/.test(raw) && words.length>=5) return false;
+      if (guidance.test(raw) && words.length>=7) return false;
+      return true;
+    }
+    function prepareRecords(data) {
+      const result=[];
+      const seen=new Map();
+      for (const item of data) {
+        if (isNoiseRecord(item)) continue;
+        const key=[item.sourceKind,item.area,norm(item.text)].join("|");
+        const existing=seen.get(key);
+        if (existing) {
+          if (item.section!==existing.section && !(existing.alsoSections||[]).includes(item.section)) existing.alsoSections.push(item.section);
+          continue;
+        }
+        const record={...item,alsoSections:[]};
+        seen.set(key,record);
+        result.push(record);
+      }
+      return result;
+    }
+    function displayTitle(record) {
+      if (/^table reference:/i.test(record.title||"")) {
+        const leaf=String(record.section||"").split(/\s*\/\s*/).pop();
+        return `Guide note: ${leaf||"Reference"}`;
+      }
+      return record.title;
+    }
+    function bodyText(record) {
+      const raw=String(record.text||"").trim();
+      if (norm(raw)===norm(record.title)) return "";
+      let prefix=String(record.title||"").trim();
+      const tablePrefix=prefix.match(/^table reference:\s*(.+)$/i);
+      if (tablePrefix) prefix=tablePrefix[1];
+      else if (prefix.length<45) return raw;
+      const prefixWords=prefix.split(/\s+/).filter(Boolean);
+      const rawWords=raw.split(/\s+/).filter(Boolean);
+      if (prefixWords.length<5 || rawWords.length<=prefixWords.length) return raw;
+      for (let i=0;i<prefixWords.length;i++) {
+        if (norm(prefixWords[i])!==norm(rawWords[i])) return raw;
+      }
+      const remainder=rawWords.slice(prefixWords.length).join(" ").replace(/^[,.;:—–-]+\s*/,"").trim();
+      if (norm(remainder).length<20) return raw;
+      return remainder.charAt(0).toUpperCase()+remainder.slice(1);
+    }
     function card(record) {
-      const link = record.sourceUrl ? `<a href="${esc(record.sourceUrl)}" target="_blank" rel="noreferrer">Open source page ↗</a>` : "";
-      return `<article class="answer"><div class="answer-top"><div class="tags">${sourceTag(record)}<span class="tag gray">${esc(record.area)}</span></div></div><h3>${esc(record.title)}</h3><div class="answer-text">${esc(record.text)}</div><div class="source-row"><strong>Source:</strong><span>${esc(record.source)}</span><span>·</span><span>${esc(record.section)}</span>${link}</div></article>`;
+      const link=record.sourceUrl?`<a href="${esc(record.sourceUrl)}" target="_blank" rel="noreferrer">Open source page ↗</a>`:"";
+      const body=bodyText(record);
+      const also=(record.alsoSections||[]).length?`<div class="source-row"><strong>Also listed under:</strong><span>${record.alsoSections.map(esc).join(" · ")}</span></div>`:"";
+      return `<article class="answer"><div class="answer-top"><div class="tags">${sourceTag(record)}<span class="tag gray">${esc(record.area)}</span></div></div><h3>${esc(displayTitle(record))}</h3>${body?`<div class="answer-text">${esc(body)}</div>`:""}<div class="source-row"><strong>Source:</strong><span>${esc(record.source)}</span><span>·</span><span>${esc(record.section)}</span>${link}</div>${also}</article>`;
     }
     function matchesFilter(record, filter) {
       if (filter === "SNAP 50/50") return record.sourceKind === "SNAP guide" || record.area === filter;
@@ -227,9 +288,10 @@
     document.querySelectorAll(".chip").forEach(button=>button.addEventListener("click",()=>{input.value=button.dataset.query;activeFilter="all";document.querySelectorAll(".filter").forEach(f=>f.classList.toggle("active",f.dataset.filter==="all"));render(input.value);document.getElementById("resultsTitle").scrollIntoView({behavior:"smooth",block:"start"});}));
     document.querySelectorAll(".filter").forEach(button=>button.addEventListener("click",()=>{activeFilter=button.dataset.filter;document.querySelectorAll(".filter").forEach(f=>f.classList.toggle("active",f===button));render(input.value);}));
     fetch("./guidance-data.json").then(r=>{if(!r.ok)throw new Error("The guide index could not be loaded.");return r.json();}).then(data=>{
-      records=Array.isArray(data)?data:[];
-      const groups={};records.forEach(r=>groups[r.sourceKind]=(groups[r.sourceKind]||0)+1);
-      document.getElementById("sourceSummary").textContent=`${groups["Program guide"]||0} passages from the TCB Program Management Guide; ${groups["SNAP guide"]||0} from the SNAP 50/50 Case Manager Guide; ${groups["Apricot how-to"]||0} from the Apricot database how-to; ${groups["Training video"]||0} high-level references from three Canva training videos; ${groups["Official website"]||0} entries from teccentroberks.org. Apricot, video, and website entries link to their source pages. Video references summarize sampled captions/screens; verify exact steps in current Apricot. Public website details may be general or change; confirm exact current requirements with a case manager.`;
+      const sourceRecords=Array.isArray(data)?data:[];
+      const groups={};sourceRecords.forEach(r=>groups[r.sourceKind]=(groups[r.sourceKind]||0)+1);
+      records=prepareRecords(sourceRecords);
+      document.getElementById("sourceSummary").textContent=`Sources indexed: ${groups["Program guide"]||0} program-guide segments, ${groups["SNAP guide"]||0} SNAP guide segments, ${groups["Apricot how-to"]||0} Apricot how-to segments, ${groups["Training video"]||0} high-level summaries from three Canva videos, and ${groups["Official website"]||0} public website entries. Search hides heading-only items, table headers, diagram symbols, and repeated lines. Video notes summarize sampled captions/screens; verify exact steps in current Apricot. Public website details may be general or change; confirm exact current requirements with a case manager.`;
       document.querySelectorAll(".filter").forEach(button=>{const filter=button.dataset.filter;const n=filter==="all"?records.length:records.filter(r=>matchesFilter(r,filter)).length;const target=button.querySelector(".count");if(target)target.textContent=n.toLocaleString();});
       render();
     }).catch(error=>{
