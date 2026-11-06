@@ -120,6 +120,7 @@
         <button class="filter" data-filter="Organization-wide">Organization-wide <span class="count"></span></button>
         <button class="filter" data-filter="SNAP 50/50">SNAP 50/50 <span class="count"></span></button>
         <button class="filter" data-filter="Apricot how-to">Apricot how-to <span class="count"></span></button>
+        <button class="filter" data-filter="Training videos">Training videos <span class="count"></span></button>
         <button class="filter" data-filter="Allied Health">Allied Health <span class="count"></span></button>
         <button class="filter" data-filter="Digital Literacy">Digital Literacy <span class="count"></span></button>
         <button class="filter" data-filter="Culinary Arts">Culinary Arts <span class="count"></span></button>
@@ -175,6 +176,7 @@
     function sourceTag(record) {
       if (record.sourceKind === "SNAP guide") return "<span class=\"tag gold\">SNAP 50/50 guide</span>";
       if (record.sourceKind === "Apricot how-to") return "<span class=\"tag gray\">Apricot how-to</span>";
+      if (record.sourceKind === "Training video") return "<span class=\"tag gray\">Training video</span>";
       if (record.sourceKind === "Official website") return "<span class=\"tag\">Tec Centro website</span>";
       return "<span class=\"tag\">TCB program guide</span>";
     }
@@ -227,7 +229,7 @@
     fetch("./guidance-data.json").then(r=>{if(!r.ok)throw new Error("The guide index could not be loaded.");return r.json();}).then(data=>{
       records=Array.isArray(data)?data:[];
       const groups={};records.forEach(r=>groups[r.sourceKind]=(groups[r.sourceKind]||0)+1);
-      document.getElementById("sourceSummary").textContent=`${groups["Program guide"]||0} passages from the TCB Program Management Guide; ${groups["SNAP guide"]||0} from the SNAP 50/50 Case Manager Guide; ${groups["Apricot how-to"]||0} from the Apricot database how-to; ${groups["Official website"]||0} entries from teccentroberks.org. Apricot and website results link to their source pages. Public website details may be general or change; confirm exact current requirements with a case manager.`;
+      document.getElementById("sourceSummary").textContent=`${groups["Program guide"]||0} passages from the TCB Program Management Guide; ${groups["SNAP guide"]||0} from the SNAP 50/50 Case Manager Guide; ${groups["Apricot how-to"]||0} from the Apricot database how-to; ${groups["Training video"]||0} high-level references from three Canva training videos; ${groups["Official website"]||0} entries from teccentroberks.org. Apricot, video, and website entries link to their source pages. Video references summarize sampled captions/screens; verify exact steps in current Apricot. Public website details may be general or change; confirm exact current requirements with a case manager.`;
       document.querySelectorAll(".filter").forEach(button=>{const filter=button.dataset.filter;const n=filter==="all"?records.length:records.filter(r=>matchesFilter(r,filter)).length;const target=button.querySelector(".count");if(target)target.textContent=n.toLocaleString();});
       render();
     }).catch(error=>{
