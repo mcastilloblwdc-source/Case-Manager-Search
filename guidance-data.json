@@ -8648,5 +8648,35 @@
     "title": "How to use public program details",
     "area": "Organization-wide",
     "text": "Public program pages describe offerings and may-list enrollment documents; they do not replace current cohort checklists or staff policy. Use the page linked on each result as the source, and ask the assigned case manager to verify exact eligibility, required documents, fees, schedules, testing, and current openings. When a website statement conflicts with an internal program guide, identify both sources and confirm the current instruction before advising a participant."
+  },
+  {
+    "id": "v1",
+    "source": "Canva video · ABE Interest to Enrollment",
+    "sourceKind": "Training video",
+    "sourceUrl": "https://www.canva.com/design/DAHWagTkPR4/6EHI0DLT_J0-ru2HZotXBg/watch?utm_content=DAHWagTkPR4&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h3a68e96594",
+    "section": "Apricot interest-to-enrollment workflow",
+    "title": "ABE interest to enrollment: intake and class setup",
+    "area": "Training videos",
+    "text": "High-level reference from a review of sampled captions and screens; confirm the current click path in Apricot. The ABE video appears to cover collecting a prospective learner’s basic intake details, documenting outreach attempts and outcomes, linking the person to a client profile, assigning a primary user, and moving into program or class setup. It also appears to show managing a class transition. Use the current TCB guide and Apricot workflow for exact steps; do not enter or publish participant information in this finder."
+  },
+  {
+    "id": "v2",
+    "source": "Canva video · Workforce Interest to Enrollment",
+    "sourceKind": "Training video",
+    "sourceUrl": "https://www.canva.com/design/DAHWa-Tj8Pw/hpS4u8k4EuHrrPWNYZYPGQ/watch?utm_content=DAHWa-Tj8Pw&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h3d891568d2",
+    "section": "Apricot interest-to-enrollment workflow",
+    "title": "Workforce interest to enrollment: profile, goals, and follow-up",
+    "area": "Training videos",
+    "text": "High-level reference from a review of sampled captions and screens; confirm the current click path in Apricot. The Workforce video appears to cover sharing the external profile link, finding a person in the clients-in-progress view, recording long- and short-term goals, and documenting job-search support and follow-up. Use the current TCB guide and Apricot workflow for exact steps; do not enter or publish participant information in this finder."
+  },
+  {
+    "id": "v3",
+    "source": "Canva video · Employment Services Interest to Enrollment",
+    "sourceKind": "Training video",
+    "sourceUrl": "https://www.canva.com/design/DAHWa5VG6kU/-qZONSDr3S08uOg1jy-R4Q/watch?utm_content=DAHWa5VG6kU&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=ha40546db9b",
+    "section": "Apricot interest-to-enrollment workflow",
+    "title": "Employment Services: intake review and program placement",
+    "area": "Training videos",
+    "text": "High-level reference from a review of sampled captions and screens; confirm the current click path in Apricot. The Employment Services video appears to cover reviewing the participant folder and intake information, working with the tracking form, and recording program placement. Use the current TCB guide and Apricot workflow for exact steps; do not enter or publish participant information in this finder."
   }
 ]
