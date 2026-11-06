@@ -137,7 +137,7 @@
   <script>
     const APRICOT_URL = "https://docs.google.com/document/d/154VA_KLETIvUsI0kMsyPyw4ewig5O3T7ZCBPJok1ePU/edit";
     const STOP = new Set("a an and are as at be before by can could do does for from had has have how i in into is it its me my of on or our should the their them there this to was we what when where which who why will with would you your please participant participants student students staff guide".split(" "));
-    const ALIASES = new Map([["waitlist",["waiting","list"]],["waitlisted",["waiting","list"]],["spal",["special","allowance"]],["caO".toLowerCase(),["county","assistance","office"]],["ebt",["snap"]],["apricot",["database"]],["interview",["admission"]],["intake",["application"]]]);
+    const ALIASES = new Map([["waitlist",["waiting","list"]],["waitlisted",["waiting","list"]],["spal",["special","allowance"]],["caO".toLowerCase(),["county","assistance","office"]],["ebt",["snap"]],["apricot",["database"]],["interview",["admission"]],["intake",["application"]],["certified",["cna"]],["nursing",["nurse","cna"]],["nurse",["nursing","cna"]],["assistant",["aide","cna"]],["aide",["cna"]]]);
     const results = document.getElementById("results");
     const input = document.getElementById("question");
     const count = document.getElementById("resultCount");
@@ -254,7 +254,11 @@
       const pool=currentPool();
       const terms=queryTerms(query);
       if (!terms.length) return pool.map(r=>({record:r,score:0,matched:0}));
-      return pool.map(record=>({record,...scoreRecord(record,terms,query)})).filter(x=>x.matched>0).sort((a,b)=>b.matched-a.matched||b.score-a.score||a.record.title.localeCompare(b.record.title));
+      const found=pool.map(record=>({record,...scoreRecord(record,terms,query)})).filter(x=>x.matched>0);
+      const complete=found.filter(x=>x.matched===terms.length);
+      const minimum=terms.length<=2?terms.length:Math.ceil(terms.length*.6);
+      const focused=found.filter(x=>x.matched>=minimum);
+      return (complete.length?complete:focused.length?focused:found).sort((a,b)=>b.matched-a.matched||b.score-a.score||a.record.title.localeCompare(b.record.title));
     }
     function showConflict(query, found) {
       const q=norm(query);
