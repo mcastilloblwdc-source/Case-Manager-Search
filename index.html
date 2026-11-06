@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#123c34" />
+  <meta name="description" content="Search the Tec Centro Berks case management, SNAP 50/50, and Apricot reference guides." />
+  <title>TCB Case Manager Guide Finder</title>
+  <style>
+    :root { --green:#123c34; --green2:#1d6b58; --gold:#d7a533; --ink:#17322d; --muted:#60736e; --line:#dce8e3; --wash:#f5f8f6; --white:#fff; --mint:#e9f4ef; --shadow:0 18px 48px rgba(17,55,46,.09); }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:#fff; color:var(--ink); font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--gold) 0 18%,var(--green2) 18% 100%); }
+    header { border-bottom:1px solid var(--line); }
+    .head-inner { width:min(1160px,calc(100% - 36px)); min-height:64px; margin:auto; display:flex; align-items:center; justify-content:flex-end; }
+    .badge { display:inline-flex; align-items:center; gap:8px; border:1px solid #d5e8df; border-radius:999px; padding:8px 12px; background:var(--mint); color:var(--green); font-size:12px; font-weight:750; }
+    .badge i { width:7px; height:7px; border-radius:50%; background:var(--gold); }
+    main { width:min(1160px,calc(100% - 36px)); margin:auto; }
+    .hero { text-align:center; padding:26px 0 15px; }
+    .hero-logo { height:110px; max-width:390px; margin:0 auto 8px; display:flex; justify-content:center; align-items:center; }
+    .hero-logo img { display:block; max-height:100%; max-width:100%; object-fit:contain; }
+    h1 { color:var(--green); font-family:Georgia,"Times New Roman",serif; font-size:clamp(30px,4.4vw,44px); font-weight:500; letter-spacing:-.035em; margin:4px 0 7px; }
+    .hero-copy { color:var(--muted); margin:0; font-size:15px; }
+    .search-panel { width:min(800px,100%); min-height:64px; margin:22px auto 0; display:flex; align-items:center; gap:12px; border:1px solid var(--line); border-radius:19px; padding:8px 9px 8px 20px; box-shadow:var(--shadow); background:#fff; }
+    .search-icon { flex:none; width:22px; height:22px; color:var(--green2); }
+    #question { flex:1; min-width:0; border:0; outline:0; color:var(--ink); font:inherit; font-size:16px; background:transparent; }
+    #question::placeholder { color:#899a95; }
+    #askButton { border:0; border-radius:13px; padding:13px 23px; background:var(--green); color:#fff; font-size:14px; font-weight:750; cursor:pointer; }
+    #askButton:hover { background:#0b3028; }
+    .search-hint { text-align:center; color:var(--muted); margin:10px auto 20px; font-size:12px; }
+    .tool-label { margin:0 0 10px; color:#748680; font-size:11px; font-weight:800; letter-spacing:.11em; text-align:center; text-transform:uppercase; }
+    .suggestions { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin:0 auto 24px; }
+    .chip,.filter { cursor:pointer; border:1px solid var(--line); border-radius:999px; background:#fff; color:#3e5b53; font:inherit; font-size:12px; padding:9px 13px; transition:background .15s,border-color .15s; }
+    .chip:hover,.filter:hover { background:var(--mint); border-color:#c5ded3; }
+    .browse { padding:16px 0 21px; border-top:1px solid #eef3f0; border-bottom:1px solid #eef3f0; }
+    .filter-list { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
+    .filter.active { background:var(--green); border-color:var(--green); color:#fff; font-weight:750; }
+    .filter .count { display:inline-block; margin-left:5px; opacity:.7; font-size:10px; }
+    .content { padding:24px 0 64px; }
+    .results-head { display:flex; justify-content:space-between; align-items:flex-end; gap:16px; margin-bottom:15px; }
+    h2 { margin:0; color:var(--green); font-size:21px; letter-spacing:-.02em; }
+    .results-sub { margin:4px 0 0; color:var(--muted); font-size:13px; }
+    #resultCount { color:#6e807a; font-size:12px; white-space:nowrap; }
+    .answer { margin:0 0 13px; padding:20px 22px; border:1px solid var(--line); border-radius:16px; background:#fff; box-shadow:0 5px 16px rgba(20,60,49,.04); }
+    .answer-top { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; }
+    .tags { display:flex; flex-wrap:wrap; gap:6px; }
+    .tag { display:inline-flex; border-radius:999px; padding:5px 9px; background:var(--mint); color:var(--green); font-size:10px; font-weight:750; }
+    .tag.gold { background:#fbf3de; color:#785711; }
+    .tag.gray { background:#eff2f1; color:#52645e; }
+    .answer h3 { margin:11px 0 8px; color:var(--ink); font-size:17px; line-height:1.35; }
+    .answer-text { color:#3f5750; font-size:14px; line-height:1.65; white-space:pre-wrap; overflow-wrap:anywhere; }
+    .source-row { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:14px; padding-top:11px; border-top:1px solid #edf2ef; color:#73847e; font-size:11px; }
+    .source-row strong { color:#425b53; }
+    .source-row a { color:var(--green2); font-weight:700; text-decoration:none; }
+    .source-row a:hover { text-decoration:underline; }
+    .conflict { margin:0 0 14px; padding:13px 15px; border:1px solid #ead7a8; border-radius:13px; background:#fffaf0; color:#715719; font-size:13px; line-height:1.55; }
+    .conflict strong { display:block; margin-bottom:3px; color:#654c17; }
+    .empty { padding:36px 20px; border:1px dashed #cbd9d3; border-radius:16px; background:var(--wash); text-align:center; color:var(--muted); }
+    .empty h3 { margin:0 0 7px; color:var(--green); }
+    .empty p { max-width:620px; margin:auto; font-size:13px; line-height:1.55; }
+    .loading { padding:28px; border-radius:15px; background:var(--wash); color:var(--muted); text-align:center; }
+    .source-note { margin-top:23px; padding:14px 16px; border:1px solid var(--line); border-radius:13px; background:var(--wash); color:#596e66; font-size:12px; line-height:1.55; }
+    .source-note strong { color:var(--green); }
+    footer { background:var(--green); color:#dcebe5; }
+    .foot-inner { width:min(1160px,calc(100% - 36px)); margin:auto; padding:18px 0; display:flex; justify-content:space-between; gap:14px; font-size:11px; }
+    .foot-inner span:last-child { color:#b7cec5; text-align:right; }
+    @media(max-width:700px) {
+      .head-inner,main,.foot-inner { width:calc(100% - 28px); }
+      .hero { padding-top:21px; }
+      .hero-logo { height:88px; max-width:310px; }
+      .search-panel { min-height:58px; gap:7px; padding-left:13px; }
+      #question { font-size:14px; }
+      #askButton { padding:12px 14px; }
+      .suggestions { justify-content:flex-start; overflow:auto; flex-wrap:nowrap; padding-bottom:3px; }
+      .chip { white-space:nowrap; flex:none; }
+      .filter-list { justify-content:flex-start; flex-wrap:nowrap; overflow:auto; padding-bottom:3px; }
+      .filter { white-space:nowrap; flex:none; }
+      .results-head { align-items:flex-start; }
+      .answer { padding:17px 15px; }
+      .foot-inner { display:block; }
+      .foot-inner span { display:block; margin:4px 0; }
+      .foot-inner span:last-child { text-align:left; }
+    }
+    @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { transition:none!important; } }
+  </style>
+</head>
+<body>
+  <div class="topline"></div>
+  <header><div class="head-inner"><span class="badge"><i></i> Staff reference prototype</span></div></header>
+  <main>
+    <section class="hero" aria-labelledby="pageTitle">
+      <div class="hero-logo"><img src="assets/tec-centro-berks-logo.png" alt="Tec Centro Berks logo" /></div>
+      <h1 id="pageTitle">Case Manager Guide Finder</h1>
+      <p class="hero-copy">Search procedures across the case management, SNAP 50/50, and Apricot guides.</p>
+      <form id="searchForm" class="search-panel" role="search">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.4 4.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <input id="question" type="search" autocomplete="off" placeholder="Ask a question or enter a topic, like SNAP or waitlist" aria-label="Search all staff guides" />
+        <button id="askButton" type="submit">Search</button>
+      </form>
+      <p class="search-hint" id="searchHint">Search uses the text of each guide and shows matching source passages. It does not invent steps.</p>
+      <p class="tool-label">Try a common question</p>
+      <div class="suggestions" aria-label="Suggested questions">
+        <button class="chip" data-query="SNAP 50/50 eligibility and referral">SNAP eligibility</button>
+        <button class="chip" data-query="What must be complete before scheduling an interview?">Interview checklist</button>
+        <button class="chip" data-query="How do I add a participant to the waitlist?">Waitlist steps</button>
+        <button class="chip" data-query="Website request contact attempts">Website requests</button>
+        <button class="chip" data-query="30 60 90 day follow up">30/60/90 follow-up</button>
+        <button class="chip" data-query="Apricot Connect send a form">Apricot Connect</button>
+      </div>
+    </section>
+    <section class="browse" aria-label="Browse guide areas">
+      <p class="tool-label">Browse by area</p>
+      <div class="filter-list" id="filters">
+        <button class="filter active" data-filter="all">All areas <span class="count"></span></button>
+        <button class="filter" data-filter="Shared Standards">Shared standards <span class="count"></span></button>
+        <button class="filter" data-filter="Workforce Training">Workforce Training <span class="count"></span></button>
+        <button class="filter" data-filter="Adult Basic Education">Adult Basic Education <span class="count"></span></button>
+        <button class="filter" data-filter="Employment Services">Employment Services <span class="count"></span></button>
+        <button class="filter" data-filter="Organization-wide">Organization-wide <span class="count"></span></button>
+        <button class="filter" data-filter="SNAP 50/50">SNAP 50/50 <span class="count"></span></button>
+        <button class="filter" data-filter="Apricot how-to">Apricot how-to <span class="count"></span></button>
+      </div>
+    </section>
+    <section class="content" aria-live="polite">
+      <div class="results-head"><div><h2 id="resultsTitle">Search the full guide set</h2><p id="resultsSub" class="results-sub">Use the search bar or choose an area to browse its source passages.</p></div><span id="resultCount"></span></div>
+      <div id="results"><div class="loading">Loading the guides…</div></div>
+      <div class="source-note"><strong>Sources included</strong><div id="sourceSummary">Loading source details…</div></div>
+    </section>
+  </main>
+  <footer><div class="foot-inner"><span>TEC CENTRO BERKS · CASE MANAGER GUIDE FINDER</span><span>Source text is labeled by guide and section. Check the current approved guide when instructions conflict.</span></div></footer>
+  <script>
+    const APRICOT_URL = "https://docs.google.com/document/d/154VA_KLETIvUsI0kMsyPyw4ewig5O3T7ZCBPJok1ePU/edit";
+    const STOP = new Set("a an and are as at be before by can could do does for from had has have how i in into is it its me my of on or our should the their them there this to was we what when where which who why will with would you your please participant participants student students staff guide".split(" "));
+    const ALIASES = new Map([["waitlist",["waiting","list"]],["waitlisted",["waiting","list"]],["spal",["special","allowance"]],["caO".toLowerCase(),["county","assistance","office"]],["ebt",["snap"]],["apricot",["database"]],["interview",["admission"]],["intake",["application"]]]);
+    const results = document.getElementById("results");
+    const input = document.getElementById("question");
+    const count = document.getElementById("resultCount");
+    const title = document.getElementById("resultsTitle");
+    const subtitle = document.getElementById("resultsSub");
+    let records = [];
+    let activeFilter = "all";
+
+    function norm(value) { return String(value||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim(); }
+    function queryTerms(value) {
+      const terms = norm(value).split(" ").filter(w=>w.length>1&&!STOP.has(w));
+      if (norm(value).includes("wait list") && !terms.includes("waitlist")) terms.push("waitlist");
+      if (norm(value).includes("special allowance") && !terms.includes("spal")) terms.push("spal");
+      return [...new Set(terms)];
+    }
+    function scoreRecord(record, terms, rawQuery) {
+      const titleText=norm(record.title), sectionText=norm(record.section), sourceText=norm(record.source+" "+record.sourceKind), body=norm(record.text);
+      let score=0, matched=0;
+      for (const term of terms) {
+        const variants=[term,...(ALIASES.get(term)||[])];
+        let termScore=0;
+        for (const v of variants) {
+          if (titleText.includes(v)) termScore=Math.max(termScore,9);
+          if (sectionText.includes(v)) termScore=Math.max(termScore,6);
+          if (sourceText.includes(v)) termScore=Math.max(termScore,5);
+          const occurrences=body.split(v).length-1;
+          if (occurrences) termScore=Math.max(termScore,Math.min(4,1+occurrences*.45));
+        }
+        if (termScore) { matched++; score+=termScore; }
+      }
+      const phrase=norm(rawQuery);
+      if (phrase.length>3 && (titleText.includes(phrase)||sectionText.includes(phrase))) score+=5;
+      return {score,matched};
+    }
+    function esc(value) { return String(value||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
+    function sourceTag(record) {
+      if (record.sourceKind === "SNAP guide") return "<span class=\"tag gold\">SNAP 50/50 guide</span>";
+      if (record.sourceKind === "Apricot how-to") return "<span class=\"tag gray\">Apricot how-to</span>";
+      return "<span class=\"tag\">TCB program guide</span>";
+    }
+    function card(record) {
+      const link = record.sourceUrl ? `<a href="${esc(record.sourceUrl)}" target="_blank" rel="noreferrer">Open Apricot reference ↗</a>` : "";
+      return `<article class="answer"><div class="answer-top"><div class="tags">${sourceTag(record)}<span class="tag gray">${esc(record.area)}</span></div></div><h3>${esc(record.title)}</h3><div class="answer-text">${esc(record.text)}</div><div class="source-row"><strong>Source:</strong><span>${esc(record.source)}</span><span>·</span><span>${esc(record.section)}</span>${link}</div></article>`;
+    }
+    function currentPool() { return activeFilter === "all" ? records : records.filter(r=>r.area===activeFilter); }
+    function filteredAndScored(query) {
+      const pool=currentPool();
+      const terms=queryTerms(query);
+      if (!terms.length) return pool.slice(0,10).map(r=>({record:r,score:0,matched:0}));
+      return pool.map(record=>({record,...scoreRecord(record,terms,query)})).filter(x=>x.matched>0).sort((a,b)=>b.matched-a.matched||b.score-a.score||a.record.title.localeCompare(b.record.title));
+    }
+    function showConflict(query, found) {
+      const q=norm(query);
+      const contactQuestion=["website","contact","attempt","request for service","follow up"].some(w=>q.includes(w));
+      const corpus=found.map(x=>norm(x.record.text)).join(" ");
+      const needs=contactQuestion && (corpus.includes("within 72 hours")||corpus.includes("same day"));
+      return needs ? `<div class="conflict"><strong>Confirm the contact schedule</strong>The program guide contains different website-request schedules: one section says the first attempt is within 72 hours, followed by attempts seven days apart; a separate summary says three attempts happen the same day. Confirm which instruction is current before acting.</div>` : "";
+    }
+    function render(query="") {
+      if (!records.length) return;
+      const cleanQuery=query.trim();
+      const all=filteredAndScored(cleanQuery);
+      if (!cleanQuery && activeFilter==="all") {
+        title.textContent="Search the full guide set";
+        subtitle.textContent=`${records.length.toLocaleString()} source passages are searchable across the case management, SNAP 50/50, and Apricot references.`;
+        count.textContent=`${records.length.toLocaleString()} passages`;
+        results.innerHTML=`<div class="empty"><h3>What do you need to do?</h3><p>Enter a question or topic above. You can search exact terms like “SNAP,” or ask in your own words, such as “What must be complete before an interview?”</p></div>`;
+        return;
+      }
+      const shown=all.slice(0,12);
+      title.textContent=cleanQuery?"Search results":activeFilter;
+      subtitle.textContent=cleanQuery?`Best source matches for “${cleanQuery}”`:"Browse source passages in this area.";
+      count.textContent=`${shown.length.toLocaleString()} of ${all.length.toLocaleString()} matches`;
+      if (!shown.length) {
+        results.innerHTML=`<div class="empty"><h3>No matching passage found</h3><p>Try a shorter phrase, another term from the guide, or browse by area. The finder only returns source material; it does not make up a procedure.</p></div>`;
+        return;
+      }
+      results.innerHTML=showConflict(cleanQuery,shown)+shown.map(x=>card(x.record)).join("");
+    }
+    document.getElementById("searchForm").addEventListener("submit",e=>{e.preventDefault();render(input.value);document.getElementById("resultsTitle").scrollIntoView({behavior:"smooth",block:"start"});});
+    document.querySelectorAll(".chip").forEach(button=>button.addEventListener("click",()=>{input.value=button.dataset.query;activeFilter="all";document.querySelectorAll(".filter").forEach(f=>f.classList.toggle("active",f.dataset.filter==="all"));render(input.value);document.getElementById("resultsTitle").scrollIntoView({behavior:"smooth",block:"start"});}));
+    document.querySelectorAll(".filter").forEach(button=>button.addEventListener("click",()=>{activeFilter=button.dataset.filter;document.querySelectorAll(".filter").forEach(f=>f.classList.toggle("active",f===button));render(input.value);}));
+    fetch("./guidance-data.json").then(r=>{if(!r.ok)throw new Error("The guide index could not be loaded.");return r.json();}).then(data=>{
+      records=Array.isArray(data)?data:[];
+      const groups={};records.forEach(r=>groups[r.sourceKind]=(groups[r.sourceKind]||0)+1);
+      document.getElementById("sourceSummary").textContent=`${groups["Program guide"]||0} passages from the TCB Program Management Guide; ${groups["SNAP guide"]||0} from the SNAP 50/50 Case Manager Guide; ${groups["Apricot how-to"]||0} from the Apricot database how-to. The Apricot results link to the source Google Doc.`;
+      document.querySelectorAll(".filter").forEach(button=>{const filter=button.dataset.filter;const n=filter==="all"?records.length:records.filter(r=>r.area===filter).length;const target=button.querySelector(".count");if(target)target.textContent=n.toLocaleString();});
+      render();
+    }).catch(error=>{
+      document.getElementById("sourceSummary").textContent="The source index did not load. Confirm that guidance-data.json is uploaded beside index.html.";
+      results.innerHTML=`<div class="empty"><h3>Could not load the guides</h3><p>${esc(error.message)} Both index.html and guidance-data.json must be in the repository root.</p></div>`;
+    });
+  </script>
+</body>
+</html>
