@@ -87,12 +87,12 @@
 </head>
 <body>
   <div class="topline"></div>
-  <header><div class="head-inner"><span class="badge"><i></i> Staff reference prototype</span></div></header>
+  <header><div class="head-inner"><span class="badge"><i></i> Staff reference · source linked</span></div></header>
   <main>
     <section class="hero" aria-labelledby="pageTitle">
       <div class="hero-logo"><img src="assets/tec-centro-berks-logo.png" alt="Tec Centro Berks logo" /></div>
       <h1 id="pageTitle">Case Manager Guide Finder</h1>
-      <p class="hero-copy">Search procedures across the case management, SNAP 50/50, and Apricot guides.</p>
+      <p class="hero-copy">Search staff workflows, SNAP 50/50 and Apricot guidance, and public program details.</p>
       <form id="searchForm" class="search-panel" role="search">
         <svg class="search-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.4 4.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         <input id="question" type="search" autocomplete="off" placeholder="Ask a question or enter a topic, like SNAP or waitlist" aria-label="Search all staff guides" />
@@ -120,6 +120,10 @@
         <button class="filter" data-filter="Organization-wide">Organization-wide <span class="count"></span></button>
         <button class="filter" data-filter="SNAP 50/50">SNAP 50/50 <span class="count"></span></button>
         <button class="filter" data-filter="Apricot how-to">Apricot how-to <span class="count"></span></button>
+        <button class="filter" data-filter="Allied Health">Allied Health <span class="count"></span></button>
+        <button class="filter" data-filter="Digital Literacy">Digital Literacy <span class="count"></span></button>
+        <button class="filter" data-filter="Culinary Arts">Culinary Arts <span class="count"></span></button>
+        <button class="filter" data-filter="Community Services">Community Services <span class="count"></span></button>
       </div>
     </section>
     <section class="content" aria-live="polite">
@@ -128,7 +132,7 @@
       <div class="source-note"><strong>Sources included</strong><div id="sourceSummary">Loading source details…</div></div>
     </section>
   </main>
-  <footer><div class="foot-inner"><span>TEC CENTRO BERKS · CASE MANAGER GUIDE FINDER</span><span>Source text is labeled by guide and section. Check the current approved guide when instructions conflict.</span></div></footer>
+  <footer><div class="foot-inner"><span>TEC CENTRO BERKS · CASE MANAGER GUIDE FINDER</span><span>Internal procedures and public program details are labeled by source. Confirm current requirements with a case manager.</span></div></footer>
   <script>
     const APRICOT_URL = "https://docs.google.com/document/d/154VA_KLETIvUsI0kMsyPyw4ewig5O3T7ZCBPJok1ePU/edit";
     const STOP = new Set("a an and are as at be before by can could do does for from had has have how i in into is it its me my of on or our should the their them there this to was we what when where which who why will with would you your please participant participants student students staff guide".split(" "));
@@ -171,10 +175,11 @@
     function sourceTag(record) {
       if (record.sourceKind === "SNAP guide") return "<span class=\"tag gold\">SNAP 50/50 guide</span>";
       if (record.sourceKind === "Apricot how-to") return "<span class=\"tag gray\">Apricot how-to</span>";
+      if (record.sourceKind === "Official website") return "<span class=\"tag\">Tec Centro website</span>";
       return "<span class=\"tag\">TCB program guide</span>";
     }
     function card(record) {
-      const link = record.sourceUrl ? `<a href="${esc(record.sourceUrl)}" target="_blank" rel="noreferrer">Open Apricot reference ↗</a>` : "";
+      const link = record.sourceUrl ? `<a href="${esc(record.sourceUrl)}" target="_blank" rel="noreferrer">Open source page ↗</a>` : "";
       return `<article class="answer"><div class="answer-top"><div class="tags">${sourceTag(record)}<span class="tag gray">${esc(record.area)}</span></div></div><h3>${esc(record.title)}</h3><div class="answer-text">${esc(record.text)}</div><div class="source-row"><strong>Source:</strong><span>${esc(record.source)}</span><span>·</span><span>${esc(record.section)}</span>${link}</div></article>`;
     }
     function currentPool() { return activeFilter === "all" ? records : records.filter(r=>r.area===activeFilter); }
@@ -197,7 +202,7 @@
       const all=filteredAndScored(cleanQuery);
       if (!cleanQuery && activeFilter==="all") {
         title.textContent="Search the full guide set";
-        subtitle.textContent=`${records.length.toLocaleString()} source passages are searchable across the case management, SNAP 50/50, and Apricot references.`;
+        subtitle.textContent=`${records.length.toLocaleString()} source passages are searchable across internal guides and public program information.`;
         count.textContent=`${records.length.toLocaleString()} passages`;
         results.innerHTML=`<div class="empty"><h3>What do you need to do?</h3><p>Enter a question or topic above. You can search exact terms like “SNAP,” or ask in your own words, such as “What must be complete before an interview?”</p></div>`;
         return;
@@ -218,7 +223,7 @@
     fetch("./guidance-data.json").then(r=>{if(!r.ok)throw new Error("The guide index could not be loaded.");return r.json();}).then(data=>{
       records=Array.isArray(data)?data:[];
       const groups={};records.forEach(r=>groups[r.sourceKind]=(groups[r.sourceKind]||0)+1);
-      document.getElementById("sourceSummary").textContent=`${groups["Program guide"]||0} passages from the TCB Program Management Guide; ${groups["SNAP guide"]||0} from the SNAP 50/50 Case Manager Guide; ${groups["Apricot how-to"]||0} from the Apricot database how-to. The Apricot results link to the source Google Doc.`;
+      document.getElementById("sourceSummary").textContent=`${groups["Program guide"]||0} passages from the TCB Program Management Guide; ${groups["SNAP guide"]||0} from the SNAP 50/50 Case Manager Guide; ${groups["Apricot how-to"]||0} from the Apricot database how-to; ${groups["Official website"]||0} entries from teccentroberks.org. Apricot and website results link to their source pages. Public website details may be general or change; confirm exact current requirements with a case manager.`;
       document.querySelectorAll(".filter").forEach(button=>{const filter=button.dataset.filter;const n=filter==="all"?records.length:records.filter(r=>r.area===filter).length;const target=button.querySelector(".count");if(target)target.textContent=n.toLocaleString();});
       render();
     }).catch(error=>{
