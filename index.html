@@ -50,6 +50,12 @@
     .tag.gray { background:#eff2f1; color:#52645e; }
     .answer h3 { margin:11px 0 8px; color:var(--ink); font-size:17px; line-height:1.35; }
     .answer-text { color:#3f5750; font-size:14px; line-height:1.65; white-space:pre-wrap; overflow-wrap:anywhere; }
+    .direct-answer { margin:0 0 15px; padding:20px 22px; border:1px solid #b8d8cc; border-left:5px solid var(--green2); border-radius:15px; background:#f4faf7; }
+    .direct-answer .label { color:var(--green2); font-size:11px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; }
+    .direct-answer h3 { margin:7px 0 8px; color:var(--ink); font-size:18px; }
+    .direct-answer p { margin:0; color:#334f46; font-size:14px; line-height:1.7; }
+    .supporting-sources { margin:0 0 15px; color:var(--green2); font-size:12px; }
+    .supporting-sources summary { cursor:pointer; font-weight:750; }
     .full-passage { margin-top:8px; color:var(--green2); font-size:12px; }
     .full-passage summary { cursor:pointer; font-weight:700; }
     .full-passage .answer-text { margin-top:7px; }
@@ -139,7 +145,7 @@
   <footer><div class="foot-inner"><span>TEC CENTRO BERKS · CASE MANAGER GUIDE FINDER</span><span>Internal procedures and public program details are labeled by source. Confirm current requirements with a case manager.</span></div></footer>
   <script>
     const APRICOT_URL = "https://docs.google.com/document/d/154VA_KLETIvUsI0kMsyPyw4ewig5O3T7ZCBPJok1ePU/edit";
-    const STOP = new Set("a an and are as at be before by can could do does for from had has have how i in into is it its me my of on or our should the their them there this to was we what when where which who why will with would you your please participant participants staff guide".split(" "));
+    const STOP = new Set("a an and are as at be before by can could do does for from had has have how i in into is it its me my of on or our should the their them there this to was we what when where which who why will with would you your please participant participants staff guide add send write create make enter record long take last hours hour course courses program programs class classes show tell me".split(" "));
     const ALIASES = new Map([["waitlist",["waiting","list"]],["waitlisted",["waiting","list"]],["spal",["special","allowance"]],["caO".toLowerCase(),["county","assistance","office"]],["ebt",["snap"]],["apricot",["database"]],["interview",["admission"]],["intake",["application"]],["certified",["cna"]],["nursing",["nurse","cna"]],["nurse",["nursing","cna"]],["assistant",["aide","cna"]],["aide",["cna"]],["refer",["referral","referrals","referred"]],["referral",["refer","referrals","referred"]],["referrals",["refer","referral","referred"]],["referred",["refer","referral","referrals"]]]);
     const results = document.getElementById("results");
     const input = document.getElementById("question");
@@ -151,29 +157,51 @@
 
     function norm(value) { return String(value||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim(); }
     function queryTerms(value) {
-      const terms = norm(value).split(" ").filter(w=>w.length>1&&!STOP.has(w));
-      if (norm(value).includes("wait list") && !terms.includes("waitlist")) terms.push("waitlist");
-      if (norm(value).includes("special allowance") && !terms.includes("spal")) terms.push("spal");
+      const q=norm(value);
+      const terms=q.split(" ").filter(w=>w.length>1&&!STOP.has(w));
+      if (q.includes("wait list") && !terms.includes("waitlist")) terms.push("waitlist");
+      if (q.includes("special allowance") && !terms.includes("spal")) terms.push("spal");
       return [...new Set(terms)];
+    }
+    function stem(word) {
+      if (word.length>5 && word.endsWith("ies")) return word.slice(0,-3)+"y";
+      if (word.length>4 && word.endsWith("es") && /(ches|shes|sses|xes|zes)$/.test(word)) return word.slice(0,-2);
+      if (word.length>3 && word.endsWith("s") && !/(ss|us|is)$/.test(word)) return word.slice(0,-1);
+      return word;
+    }
+    function questionIntent(query) {
+      const q=norm(query);
+      if (/\b(how long|duration|how many hours|how many weeks|how many months|how many years|length of|time length)\b/.test(q)) return "duration";
+      if (/\b(how do i|how can i|how to|steps to|where do i|where can i|where is|where are)\b/.test(q)) return "howto";
+      if (/\b(requirements?|eligible|eligibility|qualify|qualifications?)\b/.test(q)) return "requirements";
+      return "general";
     }
     function scoreRecord(record, terms, rawQuery) {
       const titleText=norm(record.title), sectionText=norm(record.section), sourceText=norm(record.source+" "+record.sourceKind), bodyTextValue=norm(record.text);
-      const titleWords=new Set(titleText.split(" ")), sectionWords=new Set(sectionText.split(" ")), sourceWords=new Set(sourceText.split(" ")), bodyWords=bodyTextValue.split(" ");
+      const wordSet=value=>new Set(norm(value).split(" ").map(stem));
+      const titleWords=wordSet(titleText), sectionWords=wordSet(sectionText), sourceWords=wordSet(sourceText), bodyWords=bodyTextValue.split(" ").map(stem);
+      const intent=questionIntent(rawQuery);
       let score=0, matched=0;
       for (const term of terms) {
-        const variants=[term,...(ALIASES.get(term)||[])];
+        const variants=[term,...(ALIASES.get(term)||[])].map(stem);
         let termScore=0;
         for (const v of variants) {
-          if (titleWords.has(v)) termScore=Math.max(termScore,10);
-          if (sectionWords.has(v)) termScore=Math.max(termScore,7);
-          if (sourceWords.has(v)) termScore=Math.max(termScore,5);
+          if (titleWords.has(v)) termScore=Math.max(termScore,5);
+          if (sectionWords.has(v)) termScore=Math.max(termScore,3);
+          if (sourceWords.has(v)) termScore=Math.max(termScore,2);
           const occurrences=bodyWords.filter(word=>word===v).length;
-          if (occurrences) termScore=Math.max(termScore,Math.min(4,1+occurrences*.45));
+          if (occurrences) termScore=Math.max(termScore,Math.min(3,1+occurrences*.3));
         }
         if (termScore) { matched++; score+=termScore; }
       }
-      const phrase=norm(rawQuery);
-      if (phrase.length>3 && (titleText.includes(phrase)||sectionText.includes(phrase))) score+=5;
+      const phrase=terms.map(stem).join(" "), allText=norm(record.title+" "+record.section+" "+record.text).split(" ").map(stem).join(" ");
+      if (phrase.length>3 && allText.includes(phrase)) score+=9;
+      const actionPattern=/\b(navigate|select|click|open|complete|attach|upload|document|choose|search|enter|submit|send|add|create|record)\b/;
+      if (intent==="howto") {
+        if (actionPattern.test(bodyTextValue)) score+=5;
+        if (record.text.includes("→")||record.text.includes("->")) score+=5;
+        if (bodyTextValue.length<100) score-=4;
+      }
       return {score,matched};
     }
     function esc(value) { return String(value||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
@@ -277,9 +305,14 @@
       if (!terms.length) return pool.map(r=>({record:r,score:0,matched:0}));
       const found=pool.map(record=>({record,...scoreRecord(record,terms,query)})).filter(x=>x.matched>0);
       const complete=found.filter(x=>x.matched===terms.length);
-      const minimum=terms.length<=2?terms.length:Math.ceil(terms.length*.6);
+      const intent=questionIntent(query);
+      if (intent==="duration") {
+        return complete.filter(x=>/\b\d+\s*[- ]?\s*(week|weeks|month|months|year|years)\b/i.test(x.record.text)).sort((a,b)=>b.score-a.score);
+      }
+      const minimum=terms.length<=2?terms.length:Math.ceil(terms.length*.8);
       const focused=found.filter(x=>x.matched>=minimum);
-      return (complete.length?complete:focused.length?focused:found).sort((a,b)=>b.matched-a.matched||b.score-a.score||a.record.title.localeCompare(b.record.title));
+      const candidates=complete.length?complete:focused;
+      return candidates.sort((a,b)=>b.matched-a.matched||b.score-a.score||a.record.title.localeCompare(b.record.title));
     }
     function showConflict(query, found) {
       const q=norm(query);
@@ -288,26 +321,73 @@
       const needs=contactQuestion && (corpus.includes("within 72 hours")||corpus.includes("same day"));
       return needs ? `<div class="conflict"><strong>Confirm the contact schedule</strong>The program guide contains different website-request schedules: one section says the first attempt is within 72 hours, followed by attempts seven days apart; a separate summary says three attempts happen the same day. Confirm which instruction is current before acting.</div>` : "";
     }
+    function sourceCitation(record) {
+      const link=record.sourceUrl ? '<a href="'+esc(record.sourceUrl)+'" target="_blank" rel="noreferrer">Open source page ↗</a>' : "";
+      return '<div class="source-row"><strong>Source:</strong><span>'+esc(record.source)+'</span><span>·</span><span>'+esc(record.section)+'</span>'+link+'</div>';
+    }
+    function curatedAnswer(query) {
+      const q=norm(query), intent=questionIntent(query);
+      const byId=id=>records.find(r=>r.id===id);
+      if (intent==="howto" && /\b(case notes?|service notes?)\b/.test(q)) {
+        return {title:"Add a case note in Apricot",text:"Open the participant’s Apricot profile and go to Student Profile → View Folder → Services / Case Notes. Document the case-management interaction there. For Employment Services follow-up notes, include the contact date, method (phone, email, text, etc.), the participant’s response, and any interview, referral, or employment-status updates.",sources:[byId("g147"),byId("g316")].filter(Boolean)};
+      }
+      if (intent==="howto" && /\b(direct messages?|client connect)\b/.test(q)) {
+        return {title:"Send a Direct Message in Apricot",text:"Go to Administrator → Connect → Participants, then select View under Basic Education and Workforce Participants. Search Registered first; if the participant is not there, search Unregistered. Select the participant and choose Create Account if they need an account. Then open Direct Messages → New Direct Message, complete the required fields, attach the form or link, and send it.",sources:[byId("g65")].filter(Boolean)};
+      }
+      if (intent==="duration") {
+        const programs=[["plumbing","Plumbing"],["plumber","Plumbing"],["hvac","HVAC"],["cna","CNA"],["phlebotomy","Phlebotomy"],["culinary","Culinary Arts"],["cdl","CDL"],["medical assistant","Medical Assistant"],["medical records","Medical Records"],["facilities maintenance","Facilities Maintenance"]];
+        const program=programs.find(x=>q.includes(x[0]));
+        if (program) {
+          const pnorm=norm(program[0]);
+          const matches=records.filter(r=>norm(r.title+" "+r.section+" "+r.text).includes(pnorm));
+          const durationPattern=/\b\d+\s*[- ]?\s*(week|weeks|month|months|year|years)\b/i;
+          const exact=matches.filter(r=>durationPattern.test(r.text));
+          if (exact.length) return null;
+          return {title:"Program length not listed in these sources",text:"I couldn’t find a published duration for "+program[1]+" in the indexed sources. The available program information does not state how long the program lasts. Check the current cohort schedule or ask a case manager before sharing a duration.",sources:matches.slice(0,1)};
+        }
+      }
+      return null;
+    }
+    function answerBox(answer) {
+      const citations=(answer.sources||[]).map(sourceCitation).join("");
+      return '<section class="direct-answer"><div class="label">Direct answer</div><h3>'+esc(answer.title)+'</h3><p>'+esc(answer.text)+'</p>'+citations+'</section>';
+    }
     function render(query="") {
       if (!records.length) return;
       const cleanQuery=query.trim();
+      const direct=curatedAnswer(cleanQuery);
       const all=filteredAndScored(cleanQuery);
       if (!cleanQuery && activeFilter==="all") {
         title.textContent="Search the full guide set";
-        subtitle.textContent=`${records.length.toLocaleString()} source passages are searchable across internal guides and public program information.`;
-        count.textContent=`${records.length.toLocaleString()} passages`;
-        results.innerHTML=`<div class="empty"><h3>What do you need to do?</h3><p>Enter a question or topic above. You can search exact terms like “SNAP,” or ask in your own words, such as “What must be complete before an interview?”</p></div>`;
+        subtitle.textContent=records.length.toLocaleString()+" source passages are searchable across internal guides and public program information.";
+        count.textContent=records.length.toLocaleString()+" passages";
+        results.innerHTML='<div class="empty"><h3>What do you need to do?</h3><p>Ask a question in your own words. The finder puts a concise answer first and shows the source sections behind it.</p></div>';
         return;
       }
-      const shown=all.slice(0,12);
+      if (direct) {
+        title.textContent="Answer";
+        subtitle.textContent='Answer based on: “'+cleanQuery+'”';
+        count.textContent=direct.sources.length ? direct.sources.length+" source sections" : "No source section found";
+        const related=all.filter(x=>!direct.sources.some(r=>r.id===x.record.id)).slice(0,3);
+        results.innerHTML=answerBox(direct)+(related.length?'<details class="supporting-sources"><summary>See '+related.length+' related source passages</summary>'+related.map(x=>card(x.record,cleanQuery)).join("")+'</details>':"");
+        return;
+      }
       title.textContent=cleanQuery?"Search results":activeFilter;
-      subtitle.textContent=cleanQuery?`Best source matches for “${cleanQuery}”`:"Browse source passages in this area.";
-      count.textContent=`${shown.length.toLocaleString()} of ${all.length.toLocaleString()} matches`;
-      if (!shown.length) {
-        results.innerHTML=`<div class="empty"><h3>No matching passage found</h3><p>Try a shorter phrase, another term from the guide, or browse by area. The finder only returns source material; it does not make up a procedure.</p></div>`;
+      subtitle.textContent=cleanQuery?'Best source matches for “'+cleanQuery+'”':"Browse source passages in this area.";
+      if (!all.length) {
+        count.textContent="No reliable match";
+        const intent=questionIntent(cleanQuery);
+        const message=intent==="duration"?"The indexed sources do not state a duration for that program. Check the current cohort schedule or ask a case manager.":"I couldn’t find a source passage that answers that question closely enough. Try the program or workflow name, or browse by area.";
+        results.innerHTML='<div class="empty"><h3>No direct answer found</h3><p>'+esc(message)+'</p></div>';
         return;
       }
-      results.innerHTML=showConflict(cleanQuery,shown)+shown.map(x=>card(x.record,cleanQuery)).join("");
+      const shown=all.slice(0,5);
+      count.textContent=shown.length+" relevant source "+(shown.length===1?"passage":"passages");
+      const first=shown[0], firstBody=bodyText(first.record);
+      const answerText=excerptFor(firstBody,cleanQuery).excerpt;
+      const genericAnswer={title:displayTitle(first.record),text:answerText||firstBody,sources:[first.record]};
+      const related=shown.map(x=>card(x.record,cleanQuery)).join("");
+      results.innerHTML=showConflict(cleanQuery,shown)+answerBox(genericAnswer)+'<details class="supporting-sources"><summary>See '+shown.length+' supporting source '+(shown.length===1?"passage":"passages")+'</summary>'+related+'</details>';
     }
     document.getElementById("searchForm").addEventListener("submit",e=>{e.preventDefault();render(input.value);document.getElementById("resultsTitle").scrollIntoView({behavior:"smooth",block:"start"});});
     document.querySelectorAll(".chip").forEach(button=>button.addEventListener("click",()=>{input.value=button.dataset.query;activeFilter="all";document.querySelectorAll(".filter").forEach(f=>f.classList.toggle("active",f.dataset.filter==="all"));render(input.value);document.getElementById("resultsTitle").scrollIntoView({behavior:"smooth",block:"start"});}));
