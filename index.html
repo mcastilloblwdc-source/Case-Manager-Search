@@ -53,7 +53,7 @@
     .direct-answer { margin:0 0 15px; padding:20px 22px; border:1px solid #b8d8cc; border-left:5px solid var(--green2); border-radius:15px; background:#f4faf7; }
     .direct-answer .label { color:var(--green2); font-size:11px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; }
     .direct-answer h3 { margin:7px 0 8px; color:var(--ink); font-size:18px; }
-    .direct-answer p { margin:0; color:#334f46; font-size:14px; line-height:1.7; }
+    .direct-answer p { margin:0; color:#334f46; font-size:14px; line-height:1.7; white-space:pre-line; }
     .supporting-sources { margin:0 0 15px; color:var(--green2); font-size:12px; }
     .supporting-sources summary { cursor:pointer; font-weight:750; }
     .full-passage { margin-top:8px; color:var(--green2); font-size:12px; }
@@ -172,6 +172,7 @@
     function questionIntent(query) {
       const q=norm(query);
       if (/\b(how long|duration|how many hours|how many weeks|how many months|how many years|length of|time length)\b/.test(q)) return "duration";
+      if (/\b(refer|referral|referrals)\b/.test(q) && /\b(when|student|participant|snap|employment|community|how)\b/.test(q)) return "referral";
       if (/\b(how do i|how can i|how to|steps to|where do i|where can i|where is|where are)\b/.test(q)) return "howto";
       if (/\b(requirements?|eligible|eligibility|qualify|qualifications?)\b/.test(q)) return "requirements";
       return "general";
@@ -333,6 +334,9 @@
       }
       if (intent==="howto" && /\b(direct messages?|client connect)\b/.test(q)) {
         return {title:"Send a Direct Message in Apricot",text:"Go to Administrator → Connect → Participants, then select View under Basic Education and Workforce Participants. Search Registered first; if the participant is not there, search Unregistered. Select the participant and choose Create Account if they need an account. Then open Direct Messages → New Direct Message, complete the required fields, attach the form or link, and send it.",sources:[byId("g65")].filter(Boolean)};
+      }
+      if (intent==="referral") {
+        return {title:"Choose the referral type",text:"SNAP 50/50: Use this path for a student receiving SNAP who is enrolled in Workforce Training, or an ABE student who plans to enter Workforce Training. Complete the Reverse Referral and Authorization forms with the student, then email both to Kidary and Meralis at least 15 days before the training start date. They check CWDS and send the referral to the CAO if the student is eligible; do not email the CAO yourself. Approval is not guaranteed.\n\nCommunity Navigator: Refer students facing food, housing, financial, or clothing barriers. In Apricot, use Student Profile → View Folder → [CSN] In-House Case Management Referral.\n\nEmployment Services: When a participant needs job placement or career support, match them to a position based on skills, experience, qualifications, language, and interests. Complete the [EMPLOYMENT] Employment Referral form and follow the application/interview status.",sources:[byId("g497"),byId("g147"),byId("g324")].filter(Boolean)};
       }
       if (intent==="duration") {
         const programs=[["plumbing","Plumbing"],["plumber","Plumbing"],["hvac","HVAC"],["cna","CNA"],["phlebotomy","Phlebotomy"],["culinary","Culinary Arts"],["cdl","CDL"],["medical assistant","Medical Assistant"],["medical records","Medical Records"],["facilities maintenance","Facilities Maintenance"]];
