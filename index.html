@@ -286,14 +286,17 @@
     function excerptFor(body, query) {
       const sentences=body.split(/(?<=[.!?])\s+(?=[A-Z0-9“"‘(])/).filter(Boolean);
       if (!query || sentences.length<=3 && body.length<=460) return {excerpt:body,full:""};
-      const terms=queryTerms(query);
+      const terms=queryTerms(query), queryWords=norm(query).split(" ").map(stem);
+      const actionSet=new Set(["upload","add","send","document","record","complete","print","contact","enter","save","select","refer","email","submit","schedule","track","create","navigate","search","click","open","choose","check"]);
+      const actions=queryWords.filter(w=>actionSet.has(w));
       if (!terms.length) return {excerpt:sentences.slice(0,2).join(" "),full:body};
       const ranked=sentences.map((sentence,index)=>{
-        const words=new Set(norm(sentence).split(" "));
-        let hits=0;
-        for (const term of terms) if ([term,...(ALIASES.get(term)||[])].some(v=>words.has(v))) hits++;
-        return {sentence,index,hits};
-      }).filter(x=>x.hits>0).sort((a,b)=>b.hits-a.hits||a.index-b.index);
+        const words=new Set(norm(sentence).split(" ").map(stem));
+        let hits=0, actionHits=0;
+        for (const term of terms) if ([term,...(ALIASES.get(term)||[])].map(stem).some(v=>words.has(v))) hits++;
+        for (const action of actions) if (words.has(action)) actionHits++;
+        return {sentence,index,hits,actionHits};
+      }).filter(x=>x.hits>0).sort((a,b)=>b.actionHits-a.actionHits||b.hits-a.hits||a.index-b.index);
       if (!ranked.length) return {excerpt:sentences.slice(0,2).join(" "),full:body};
       const chosen=ranked.slice(0,2).sort((a,b)=>a.index-b.index).map(x=>x.sentence).join(" ");
       return {excerpt:chosen,full:chosen===body?"":body};
