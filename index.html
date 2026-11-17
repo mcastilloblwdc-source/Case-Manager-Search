@@ -166,12 +166,12 @@
     function stem(word) {
       if (word.length>6 && word.endsWith("ing")) {
         let root=word.slice(0,-3);
-        if (/(.)\\1$/.test(root)) root=root.slice(0,-1);
+        if (/(.)\1$/.test(root)) root=root.slice(0,-1);
         return root;
       }
       if (word.length>5 && word.endsWith("ed")) {
         let root=word.slice(0,-2);
-        if (/(.)\\1$/.test(root)) root=root.slice(0,-1);
+        if (/(.)\1$/.test(root)) root=root.slice(0,-1);
         return root;
       }
       if (word.length>6 && word.endsWith("ment")) return word.slice(0,-4);
