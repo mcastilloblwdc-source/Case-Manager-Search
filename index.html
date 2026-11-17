@@ -145,7 +145,7 @@
   <footer><div class="foot-inner"><span>TEC CENTRO BERKS · CASE MANAGER GUIDE FINDER</span><span>Internal procedures and public program details are labeled by source. Confirm current requirements with a case manager.</span></div></footer>
   <script>
     const APRICOT_URL = "https://docs.google.com/document/d/154VA_KLETIvUsI0kMsyPyw4ewig5O3T7ZCBPJok1ePU/edit";
-    const STOP = new Set("a an and are as at be before by can could do does for from had has have how i in into is it its me my of on or our should the their them there this to was we what when where which who why will with would you your please participant participants staff guide add send write create make enter record long take last hours hour course courses program programs class classes show tell me".split(" "));
+    const STOP = new Set("a an and are as at be before by can could do does for from had has have how i in into is it its me my of on or our should the their them there this to was we what when where which who why will with would you your please participant participants staff guide add send write create make enter record long take last hours hour course courses program programs class classes show tell me upload document complete navigate search choose click open get find start have need".split(" "));
     const ALIASES = new Map([["waitlist",["waiting","list"]],["waitlisted",["waiting","list"]],["spal",["special","allowance"]],["caO".toLowerCase(),["county","assistance","office"]],["ebt",["snap"]],["apricot",["database"]],["interview",["admission"]],["intake",["application"]],["certified",["cna"]],["nursing",["nurse","cna"]],["nurse",["nursing","cna"]],["assistant",["aide","cna"]],["aide",["cna"]],["refer",["referral","referrals","referred"]],["referral",["refer","referrals","referred"]],["referrals",["refer","referral","referred"]],["referred",["refer","referral","referrals"]]]);
     const results = document.getElementById("results");
     const input = document.getElementById("question");
@@ -164,6 +164,17 @@
       return [...new Set(terms)];
     }
     function stem(word) {
+      if (word.length>6 && word.endsWith("ing")) {
+        let root=word.slice(0,-3);
+        if (/(.)\\1$/.test(root)) root=root.slice(0,-1);
+        return root;
+      }
+      if (word.length>5 && word.endsWith("ed")) {
+        let root=word.slice(0,-2);
+        if (/(.)\\1$/.test(root)) root=root.slice(0,-1);
+        return root;
+      }
+      if (word.length>6 && word.endsWith("ment")) return word.slice(0,-4);
       if (word.length>5 && word.endsWith("ies")) return word.slice(0,-3)+"y";
       if (word.length>4 && word.endsWith("es") && /(ches|shes|sses|xes|zes)$/.test(word)) return word.slice(0,-2);
       if (word.length>3 && word.endsWith("s") && !/(ss|us|is)$/.test(word)) return word.slice(0,-1);
@@ -310,7 +321,7 @@
       if (intent==="duration") {
         return complete.filter(x=>/\b\d+\s*[- ]?\s*(week|weeks|month|months|year|years)\b/i.test(x.record.text)).sort((a,b)=>b.score-a.score);
       }
-      const minimum=terms.length<=2?terms.length:Math.ceil(terms.length*.8);
+      const minimum=terms.length<=3?terms.length:Math.ceil(terms.length*.8);
       const focused=found.filter(x=>x.matched>=minimum);
       const candidates=complete.length?complete:focused;
       return candidates.sort((a,b)=>b.matched-a.matched||b.score-a.score||a.record.title.localeCompare(b.record.title));
