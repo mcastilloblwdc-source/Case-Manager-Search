@@ -358,7 +358,7 @@
       if (/\b(waitlist|waiting list|wait list)\b/.test(q)) {
         return {title:"Place a participant on the waitlist",text:"Wait until every required enrollment document has been collected and verified. Confirm the roster and Apricot information match, then go to Student Profile → View Folder → [INTAKE] Waitlist, complete the required fields, link the Program Enrollment form, review for accuracy, and save. While the participant is waiting, contact them at least monthly to confirm interest and document the outcome in Apricot.",sources:[byId("g105"),byId("g106"),byId("g224")].filter(Boolean)};
       }
-      if (/\b(website request|request for services|website service request)\b/.test(q)) {
+      if (/\b(website requests?|requests? for services|website service requests?)\b/.test(q)) {
         return {title:"Follow up on a website Request for Services",text:"Review website requests daily and check basic eligibility. Call first; if the participant does not answer, text and then email. Record the date, time, outcome, and next steps for each attempt in Apricot. The guide has conflicting timing instructions: one section says same-day three-attempt contact, while another says the first attempt is within 72 hours and later attempts are spaced out. Confirm the current timing with a supervisor before applying it.",sources:[byId("g28"),byId("g32"),byId("g36"),byId("g37"),byId("g38"),byId("g45")].filter(Boolean)};
       }
       if (/\b(30 60 90|30 60 90 day|30 60 90 days|follow up|followup)\b/.test(q) && (/\b30\b/.test(q)||/\b90\b/.test(q))) {
