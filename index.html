@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#123c34" />
-  <meta name="description" content="Search the Tec Centro Berks case management, SNAP 50/50, and Apricot reference guides." />
-  <title>TCB Case Manager Guide Finder</title>
+  <meta name="description" content="AskTec helps Tec Centro Berks employees find answers in staff policies, procedures, workflows, training materials, and published program information." />
+  <title>AskTec | Tec Centro Berks Staff Guidance</title>
   <style>
     :root { --green:#123c34; --green2:#1d6b58; --gold:#d7a533; --ink:#17322d; --muted:#60736e; --line:#dce8e3; --wash:#f5f8f6; --white:#fff; --mint:#e9f4ef; --shadow:0 18px 48px rgba(17,55,46,.09); }
     * { box-sizing:border-box; }
@@ -96,18 +96,18 @@
 </head>
 <body>
   <div class="topline"></div>
-  <header><div class="head-inner"><span class="badge"><i></i> Staff reference · source linked</span></div></header>
+  <header><div class="head-inner"><span class="badge"><i></i> AskTec · staff guidance with sources</span></div></header>
   <main>
     <section class="hero" aria-labelledby="pageTitle">
       <div class="hero-logo"><img src="assets/tec-centro-berks-logo.png" alt="Tec Centro Berks logo" /></div>
-      <h1 id="pageTitle">Case Manager Guide Finder</h1>
-      <p class="hero-copy">Search staff workflows, SNAP 50/50 and Apricot guidance, and public program details.</p>
+      <h1 id="pageTitle">AskTec</h1>
+      <p class="hero-copy">Find answers in Tec Centro Berks policies, procedures, staff workflows, training materials, and published program information.</p>
       <form id="searchForm" class="search-panel" role="search">
         <svg class="search-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.4 4.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <input id="question" type="search" autocomplete="off" placeholder="Ask a question or enter a topic, like SNAP or waitlist" aria-label="Search all staff guides" />
+        <input id="question" type="search" autocomplete="off" placeholder="Ask a staff question, like “How do I document a case note?”" aria-label="Search Tec Centro Berks staff guidance" />
         <button id="askButton" type="submit">Search</button>
       </form>
-      <p class="search-hint" id="searchHint">Search uses the text of each guide and shows matching source passages. It does not invent steps.</p>
+      <p class="search-hint" id="searchHint">Ask in plain language. AskTec gives a direct answer when the sources support one and links you to the source sections.</p>
       <p class="tool-label">Try a common question</p>
       <div class="suggestions" aria-label="Suggested questions">
         <button class="chip" data-query="SNAP 50/50 eligibility and referral">SNAP eligibility</button>
@@ -142,7 +142,7 @@
       <div class="source-note"><strong>Sources included</strong><div id="sourceSummary">Loading source details…</div></div>
     </section>
   </main>
-  <footer><div class="foot-inner"><span>TEC CENTRO BERKS · CASE MANAGER GUIDE FINDER</span><span>Internal procedures and public program details are labeled by source. Confirm current requirements with a case manager.</span></div></footer>
+  <footer><div class="foot-inner"><span>TEC CENTRO BERKS · ASKTEC</span><span>Answers are based on indexed staff guidance and published program information. Check the linked source for context and current requirements.</span></div></footer>
   <script>
     const APRICOT_URL = "https://docs.google.com/document/d/154VA_KLETIvUsI0kMsyPyw4ewig5O3T7ZCBPJok1ePU/edit";
     const STOP = new Set("a an and are as at be before by can could do does for from had has have how i in into is it its me my of on or our should the their them there this to was we what when where which who why will with would you your please participant participants staff guide add send write create make enter record long take last hours hour course courses program programs class classes show tell me upload document complete navigate search choose click open get find start have need".split(" "));
