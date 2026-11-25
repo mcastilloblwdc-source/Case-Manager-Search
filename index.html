@@ -390,7 +390,7 @@
       if (/\b(spal|special allowance)\b/.test(q) && /\b(balance|remaining|left|used|laptop|technology|tech)\b/.test(q)) {
         return {title:"Estimating a participant’s remaining SPAL balance",text:"The lifetime maximum is $1,000. Estimate the remaining amount by subtracting prior SPAL funding that was approved or issued against the lifetime limit; requests that were not approved do not count. Category limits also apply. Have designated SNAP 50/50 staff verify the participant-specific balance before promising funds.",sources:[source("staffclar-spal-balance-20261125")].filter(Boolean)};
       }
-      if (/\b(immediate|urgent|emergency|can't afford|cannot afford|needs help|assistance|support)\b/.test(q) && /\b(transportation|food|housing|financial|clothing|snap|eligibility|student|participant)\b/.test(q) && !/\b(approve|approval|approver)\b/.test(q)) {
+      if (/\b(immediate|urgent|emergency|can't afford|cannot afford|needs help|assistance|support)\b/.test(q) && /\b(transportation|food|housing|financial|clothing|snap|eligibility|student|participant)\b/.test(q) && !/\b(approv\w*)\b/.test(q)) {
         return {title:"Referring a student who needs immediate support",text:"Refer the student to the Community Navigator for help with their needs. If the issue is a SNAP 50/50 payment problem, contact the designated SNAP 50/50 staff.",sources:[source("staffclar-support-escalation-20261125"),source("g497")].filter(Boolean)};
       }
       if (/\b(snap|spal|50 50)\b/.test(q) && /\b(payment|paid|funds)\b/.test(q) && /\b(problem|issue|missing|wrong|late)\b/.test(q)) {
