@@ -413,6 +413,9 @@
     function guideQuestionAnswer(q,byId) {
       const src=(...ids)=>ids.map(id=>byId(id)).filter(Boolean);
       const noAnswer=(title,text,ids=[])=>({title,text,noAnswer:true,sources:src(...ids)});
+      if (/\b(attendance|present|absent)\b/.test(q) && /\b(add|enter|record|mark|how|where|track)\b/.test(q)) {
+        return {title:"Enter attendance in Apricot",text:"Open Apricot → Classes & Terms and select the correct class and term. If the student is not listed, open the term, choose Enroll Participants, select the student, and Save. Then use the roster’s Present/Absent options for each class date. The program guide assigns electronic attendance entry to case managers for Workforce Training and instructors for ABE. Case managers should still collect signed attendance sheets every Friday and upload them to the designated Teams folder.",sources:src("g590","g140","g250")};
+      }
       if (/\b(reverse referral|rrf)\b/.test(q) && /\b(what is|means|meaning|define)\b/.test(q)) {
         return {title:"What the Reverse Referral is for",text:"The Reverse Referral Form starts the SNAP 50/50 referral process. Complete it with the participant along with the Authorization Form, then send both to Kidary and Meralis at least 15 days before the training start date. They check eligibility and, if eligible, send the referral to the CAO.",sources:src("g497","staffclar-systems-20261125")};
       }
