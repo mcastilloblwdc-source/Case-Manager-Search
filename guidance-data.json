@@ -8678,5 +8678,86 @@
     "title": "Employment Services: intake review and program placement",
     "area": "Training videos",
     "text": "High-level reference from a review of sampled captions and screens; confirm the current click path in Apricot. The Employment Services video appears to cover reviewing the participant folder and intake information, working with the tracking form, and recording program placement. Use the current TCB guide and Apricot workflow for exact steps; do not enter or publish participant information in this finder."
+  },
+  {
+    "id": "staffclar-enrollment-20261125",
+    "title": "Staff clarification: program enrollment and returning participants",
+    "area": "Organization-wide",
+    "sourceKind": "Staff clarification",
+    "source": "Tec Centro Berks staff clarification (November 25, 2026)",
+    "section": "Enrollment and returning participants",
+    "text": "A participant may enroll in only one Workforce Training program at a time. Adult Basic Education participants may enroll in more than one ABE program. Returning participants do not need a new intake. Update the existing Apricot record when important information changes, such as an address. The steps for transferring or switching a participant between programs are not specified here; contact the program supervisor."
+  },
+  {
+    "id": "staffclar-snap-pending-20261125",
+    "title": "Staff clarification: classes while SNAP approval is pending",
+    "area": "SNAP 50/50",
+    "sourceKind": "Staff clarification",
+    "source": "Tec Centro Berks staff clarification (November 25, 2026)",
+    "section": "Class enrollment and SNAP 50/50",
+    "text": "A student may start classes while SNAP eligibility is pending. A pending SNAP decision does not prevent class attendance. SNAP or SPAL approval is not guaranteed; do not tell a student SPAL is approved or allow purchases before SPAL approval."
+  },
+  {
+    "id": "staffclar-attendance-20261125",
+    "title": "Staff clarification: follow-up after absences",
+    "area": "Organization-wide",
+    "sourceKind": "Staff clarification",
+    "source": "Tec Centro Berks staff clarification (November 25, 2026)",
+    "section": "Attendance and student support",
+    "text": "For a student absent for several weeks, document outreach attempts in Apricot, including calls, texts, emails, dates, and outcomes. Follow the applicable program attendance guide for next steps. If outreach is unsuccessful or the next step is unclear, contact the supervisor."
+  },
+  {
+    "id": "staffclar-academic-20261125",
+    "title": "Staff clarification: student struggling academically",
+    "area": "Organization-wide",
+    "sourceKind": "Staff clarification",
+    "source": "Tec Centro Berks staff clarification (November 25, 2026)",
+    "section": "Attendance and student support",
+    "text": "If a student is struggling academically, meet with the student to review available resources, speak with the program coordinator, and document the meeting and actions in Apricot."
+  },
+  {
+    "id": "staffclar-systems-20261125",
+    "title": "Staff clarification: Apricot, ORS, and CWDS access",
+    "area": "Organization-wide",
+    "sourceKind": "Staff clarification",
+    "source": "Tec Centro Berks staff clarification (November 25, 2026)",
+    "section": "Systems and staff responsibilities",
+    "text": "Case managers use Apricot for participant records. ORS is an older data management system and is no longer used. CWDS is used only by designated staff who work on SNAP 50/50; case managers should direct CWDS questions or lookups to those staff."
+  },
+  {
+    "id": "staffclar-followup-20261125",
+    "title": "Staff clarification: follow-up form contact",
+    "area": "Organization-wide",
+    "sourceKind": "Staff clarification",
+    "source": "Tec Centro Berks staff clarification (November 25, 2026)",
+    "section": "Student follow-up",
+    "text": "Send the follow-up form to the student by email or text. If the student does not complete it, call the student to obtain the information. The specific send deadline or number of attempts is not stated in this clarification."
+  },
+  {
+    "id": "staffclar-spal-balance-20261125",
+    "title": "Staff clarification: estimating remaining SPAL funds",
+    "area": "SNAP 50/50",
+    "sourceKind": "Staff clarification",
+    "source": "Tec Centro Berks staff clarification (November 25, 2026)",
+    "section": "SPAL lifetime balance",
+    "text": "The SPAL lifetime maximum is $1,000. To estimate the remaining balance, subtract prior SPAL funding that was approved or issued against the lifetime limit; do not subtract requests that were not approved. Category limits also apply. Have designated SNAP 50/50 staff verify the participant-specific balance before promising funds."
+  },
+  {
+    "id": "staffclar-spal-receipts-20261125",
+    "title": "Staff clarification: missing SPAL receipt",
+    "area": "SNAP 50/50",
+    "sourceKind": "Staff clarification",
+    "source": "Tec Centro Berks staff clarification (November 25, 2026)",
+    "section": "SPAL receipt requirements",
+    "text": "The SNAP 50/50 guide says receipts must be submitted within 14 days after purchase; if receipts are not submitted by the deadline, the participant will receive an invoice for the full funded amount and must repay it. The guide does not give a separate lost-receipt or replacement procedure. Contact designated SNAP 50/50 staff promptly."
+  },
+  {
+    "id": "staffclar-support-escalation-20261125",
+    "title": "Staff clarification: community support and escalation",
+    "area": "Organization-wide",
+    "sourceKind": "Staff clarification",
+    "source": "Tec Centro Berks staff clarification (November 25, 2026)",
+    "section": "Referrals and supervisor support",
+    "text": "Refer a student to the Community Navigator for needs such as food, housing, financial difficulty, or clothing. Escalate an issue to the supervisor when the applicable guide says to do so, or when the issue is urgent or you are unsure how to handle it. For SNAP 50/50 payment problems, contact the designated SNAP 50/50 staff."
   }
 ]
