@@ -366,7 +366,7 @@
       if (/\b(schedule|class time|class schedule)\b/.test(q) && /\b(change|switch|adjust|different)\w*\b/.test(q)) {
         return noAnswer("Schedule-change steps are not specified","The indexed guidance does not explain how to approve or record a student’s schedule change. Please verify the process with the program supervisor.",["staffclar-enrollment-20261125"]);
       }
-      if (/\b(absent|absence|attendance|stops attending|missed|misses|no show)\w*\b/.test(q) && /\b(weeks|week|several|two|without notice|stops|does not attend|doesn't attend|multiple)\b/.test(q)) {
+      if (/\b(absent|absence|attendance|attend|stops attending|missed|misses|no show)\w*\b/.test(q) && /\b(weeks|week|several|two|without notice|stops|does not attend|doesn t attend|multiple)\b/.test(q)) {
         return {title:"Following up after repeated absences",text:"Document each outreach attempt in Apricot, including calls, texts, or emails and the date and outcome. Then follow the applicable program attendance guide for next steps. If outreach is unsuccessful or you are unsure what to do next, contact the supervisor.",sources:[source("staffclar-attendance-20261125")].filter(Boolean)};
       }
       if (/\b(struggling|difficulty|behind|failing|academic|academically)\b/.test(q) && /\b(student|participant|class|program)\b/.test(q)) {
@@ -393,7 +393,7 @@
       if (/\b(reimburse|reimbursement|finance|payment)\w*\b/.test(q) && /\b(student|participant|case|problem|issue|information|handles)\b/.test(q) && !/\b(snap|spal|50 50)\b/.test(q)) {
         return noAnswer("Student reimbursement and Finance procedures are not specified","The indexed guidance does not explain who handles student reimbursements or payment problems, or what information to include in a Finance request. Please verify with the supervisor or Finance.");
       }
-      if (/\b(correct|correction|incorrect|wrong|mistake|duplicate|access|can't access|cannot access|not showing|doesn't show|does not show)\b/.test(q) && /\b(apricot|record|entry|information|system|cwds|data|profile)\b/.test(q)) {
+      if (/\b(correct|correction|incorrect|wrong|mistake|duplicate|access|can t access|cannot access|not showing|isn t showing|doesn t show|does not show|appear|appearing)\b/.test(q) && /\b(apricot|record|entry|information|system|cwds|data|profile)\b/.test(q)) {
         return noAnswer("The correction or access procedure is not specified","The indexed guidance does not give steps for correcting an Apricot entry, resolving duplicate records, or troubleshooting access. Contact the supervisor. Case managers do not use CWDS; send CWDS lookups to designated SNAP 50/50 staff.",["staffclar-systems-20261125"]);
       }
       if (/\b(urgent|escalate|escalation|unsure|not sure)\b/.test(q) && /\b(issue|problem|student|participant|guide|handle)\b/.test(q)) {
