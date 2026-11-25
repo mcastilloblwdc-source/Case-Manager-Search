@@ -51,6 +51,7 @@
     .answer h3 { margin:11px 0 8px; color:var(--ink); font-size:17px; line-height:1.35; }
     .answer-text { color:#3f5750; font-size:14px; line-height:1.65; white-space:pre-wrap; overflow-wrap:anywhere; }
     .direct-answer { margin:0 0 15px; padding:20px 22px; border:1px solid #b8d8cc; border-left:5px solid var(--green2); border-radius:15px; background:#f4faf7; }
+    .direct-answer.no-answer { border-color:#ead7a8; border-left-color:var(--gold); background:#fffaf0; }
     .direct-answer .label { color:var(--green2); font-size:11px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; }
     .direct-answer h3 { margin:7px 0 8px; color:var(--ink); font-size:18px; }
     .direct-answer p { margin:0; color:#334f46; font-size:14px; line-height:1.7; white-space:pre-line; }
@@ -222,6 +223,7 @@
       if (record.sourceKind === "Apricot how-to") return "<span class=\"tag gray\">Apricot how-to</span>";
       if (record.sourceKind === "Training video") return "<span class=\"tag gray\">Training video</span>";
       if (record.sourceKind === "Official website") return "<span class=\"tag\">Tec Centro website</span>";
+      if (record.sourceKind === "Staff clarification") return "<span class=\"tag\">Staff clarification</span>";
       return "<span class=\"tag\">TCB program guide</span>";
     }
     function isNoiseRecord(record) {
@@ -340,9 +342,70 @@
       const link=record.sourceUrl ? '<a href="'+esc(record.sourceUrl)+'" target="_blank" rel="noreferrer">Open source page ↗</a>' : "";
       return '<div class="source-row"><strong>Source:</strong><span>'+esc(record.source)+'</span><span>·</span><span>'+esc(record.section)+'</span>'+link+'</div>';
     }
+    function staffClarificationAnswer(q,byId) {
+      const source=id=>byId(id);
+      const noAnswer=(title,text,ids=[])=>({title,text,noAnswer:true,sources:ids.map(source).filter(Boolean)});
+      if (/\b(ors|cwds|apricot)\b/.test(q) && /\b(difference|use|system|access|case manager)\b/.test(q)) {
+        return {title:"Which systems case managers use",text:"Case managers use Apricot for participant records. ORS is an older system and is no longer used. CWDS is limited to designated SNAP 50/50 staff; case managers should send CWDS questions or lookups to those staff.",sources:[source("staffclar-systems-20261125")].filter(Boolean)};
+      }
+      if (/\bsnap\b/.test(q) && /\b(jets|50 50)\b/.test(q) && /\b(previous|previously|prior|already|return|used|participat)\w*\b/.test(q)) {
+        return noAnswer("Prior SNAP JETS participation needs confirmation","The indexed guidance does not explain how prior SNAP JETS participation affects a new referral. Ask the designated SNAP 50/50 staff to check the participant’s history and eligibility before advising them.",["staffclar-systems-20261125"]);
+      }
+      if (/\bsnap\b/.test(q) && /\b(pending|waiting|awaiting)\b/.test(q) && /\b(class|classes|start|attend|begin|enroll)\w*\b/.test(q)) {
+        return {title:"Starting classes while SNAP approval is pending",text:"A student may start classes while SNAP eligibility is pending. The SNAP decision does not prevent class attendance. Do not say SNAP or SPAL is approved, and do not allow purchases, until SPAL approval is confirmed.",sources:[source("staffclar-snap-pending-20261125"),source("g497")].filter(Boolean)};
+      }
+      if (/\b(two|2|multiple|more than one|at the same time|simultaneously)\b/.test(q) && /\b(program|programs|workforce|abe|enroll)\b/.test(q)) {
+        return {title:"How many programs can a student enroll in?",text:"A student may enroll in one Workforce Training program at a time. An Adult Basic Education participant may enroll in more than one ABE program.",sources:[source("staffclar-enrollment-20261125")].filter(Boolean)};
+      }
+      if (/\b(transfer|switch|change)\w*\b/.test(q) && /\b(program|programs)\b/.test(q)) {
+        return noAnswer("Program transfer steps are not specified","The current guidance does not give a transfer or program-switching workflow. Contact the program supervisor for the next steps.",["staffclar-enrollment-20261125"]);
+      }
+      if (/\b(returning|return after|return to|previously attended|dropped out|withdrawn)\b/.test(q) && /\b(intake|student|participant|enroll)\b/.test(q)) {
+        return {title:"Returning student intake",text:"A returning student does not need a new intake. Update the existing Apricot record if important information has changed, such as the student’s address. Contact the program supervisor for further steps.",sources:[source("staffclar-enrollment-20261125")].filter(Boolean)};
+      }
+      if (/\b(schedule|class time|class schedule)\b/.test(q) && /\b(change|switch|adjust|different)\w*\b/.test(q)) {
+        return noAnswer("Schedule-change steps are not specified","The indexed guidance does not explain how to approve or record a student’s schedule change. Please verify the process with the program supervisor.",["staffclar-enrollment-20261125"]);
+      }
+      if (/\b(absent|absence|attendance|stops attending|missed|misses|no show)\w*\b/.test(q) && /\b(weeks|week|several|two|without notice|stops|does not attend|doesn't attend|multiple)\b/.test(q)) {
+        return {title:"Following up after repeated absences",text:"Document each outreach attempt in Apricot, including calls, texts, or emails and the date and outcome. Then follow the applicable program attendance guide for next steps. If outreach is unsuccessful or you are unsure what to do next, contact the supervisor.",sources:[source("staffclar-attendance-20261125")].filter(Boolean)};
+      }
+      if (/\b(struggling|difficulty|behind|failing|academic|academically)\b/.test(q) && /\b(student|participant|class|program)\b/.test(q)) {
+        return {title:"Supporting a student who is struggling academically",text:"Meet with the student to review available resources, speak with the program coordinator, and document the meeting and actions in Apricot.",sources:[source("staffclar-academic-20261125")].filter(Boolean)};
+      }
+      if (/\b(follow up|followup)\b/.test(q) && /\b(form|survey)\b/.test(q)) {
+        return noAnswer("The follow-up form deadline is not specified","Send the form by email or text. If the student does not complete it, call to obtain the information. The provided guidance does not state when the form must first be sent; verify the timing with the supervisor.",["staffclar-followup-20261125"]);
+      }
+      if (/\bsupervised job search\b/.test(q) && /\b(close|closure|when|end|finish)\b/.test(q)) {
+        return noAnswer("Supervised job-search closure steps are not specified","Only staff who handle SNAP 50/50 should manage supervised job search. The indexed guidance does not state when or how to close it; verify the closure process with the designated SNAP 50/50 staff.",["staffclar-support-escalation-20261125"]);
+      }
+      if (/\b(receipt|receipts)\b/.test(q) && /\b(lost|missing|lose|misplaced)\b/.test(q) && /\b(spal|snap|student|participant)\b/.test(q)) {
+        return noAnswer("The lost-receipt procedure is not specified","The SNAP 50/50 guide says receipts not submitted within 14 days can result in an invoice for the full funded amount, which the participant must repay. It does not give a separate lost-receipt or replacement procedure. Contact designated SNAP 50/50 staff promptly.",["staffclar-spal-receipts-20261125"]);
+      }
+      if (/\b(spal|special allowance)\b/.test(q) && /\b(balance|remaining|left|used|laptop|technology|tech)\b/.test(q)) {
+        return {title:"Estimating a participant’s remaining SPAL balance",text:"The lifetime maximum is $1,000. Estimate the remaining amount by subtracting prior SPAL funding that was approved or issued against the lifetime limit; requests that were not approved do not count. Category limits also apply. Have designated SNAP 50/50 staff verify the participant-specific balance before promising funds.",sources:[source("staffclar-spal-balance-20261125")].filter(Boolean)};
+      }
+      if (/\b(immediate|urgent|emergency|can't afford|cannot afford|needs help|assistance|support)\b/.test(q) && /\b(transportation|food|housing|financial|clothing|snap|eligibility|student|participant)\b/.test(q)) {
+        return {title:"Referring a student who needs immediate support",text:"Refer the student to the Community Navigator for help with their needs. If the issue is a SNAP 50/50 payment problem, contact the designated SNAP 50/50 staff.",sources:[source("staffclar-support-escalation-20261125"),source("g497")].filter(Boolean)};
+      }
+      if (/\b(snap|spal|50 50)\b/.test(q) && /\b(payment|paid|funds)\b/.test(q) && /\b(problem|issue|missing|wrong|late)\b/.test(q)) {
+        return {title:"SNAP 50/50 payment problem",text:"Contact the designated staff who handle SNAP 50/50. Case managers should not use CWDS to investigate the payment themselves.",sources:[source("staffclar-support-escalation-20261125"),source("staffclar-systems-20261125")].filter(Boolean)};
+      }
+      if (/\b(reimburse|reimbursement|finance|payment)\w*\b/.test(q) && /\b(student|participant|case|problem|issue|information|handles)\b/.test(q) && !/\b(snap|spal|50 50)\b/.test(q)) {
+        return noAnswer("Student reimbursement and Finance procedures are not specified","The indexed guidance does not explain who handles student reimbursements or payment problems, or what information to include in a Finance request. Please verify with the supervisor or Finance.");
+      }
+      if (/\b(correct|correction|incorrect|wrong|mistake|duplicate|access|can't access|cannot access|not showing|doesn't show|does not show)\b/.test(q) && /\b(apricot|record|entry|information|system|cwds|data|profile)\b/.test(q)) {
+        return noAnswer("The correction or access procedure is not specified","The indexed guidance does not give steps for correcting an Apricot entry, resolving duplicate records, or troubleshooting access. Contact the supervisor. Case managers do not use CWDS; send CWDS lookups to designated SNAP 50/50 staff.",["staffclar-systems-20261125"]);
+      }
+      if (/\b(urgent|escalate|escalation|unsure|not sure)\b/.test(q) && /\b(issue|problem|student|participant|guide|handle)\b/.test(q)) {
+        return {title:"When to escalate a student issue",text:"Escalate an issue when the relevant guide says to do so, or when it is urgent or you are unsure how to handle it. Contact the supervisor. For SNAP 50/50 payment problems, contact the designated SNAP 50/50 staff.",sources:[source("staffclar-support-escalation-20261125")].filter(Boolean)};
+      }
+      return null;
+    }
     function curatedAnswer(query) {
       const q=norm(query), intent=questionIntent(query);
       const byId=id=>records.find(r=>r.id===id);
+      const staffAnswer=staffClarificationAnswer(q,byId);
+      if (staffAnswer) return staffAnswer;
       if (intent==="howto" && /\b(case notes?|service notes?)\b/.test(q)) {
         return {title:"Add a case note in Apricot",text:"Open the participant’s Apricot profile and go to Student Profile → View Folder → Services / Case Notes. Document the case-management interaction there. For Employment Services follow-up notes, include the contact date, method (phone, email, text, etc.), the participant’s response, and any interview, referral, or employment-status updates.",sources:[byId("g147"),byId("g316")].filter(Boolean)};
       }
@@ -386,7 +449,9 @@
     }
     function answerBox(answer) {
       const citations=(answer.sources||[]).map(sourceCitation).join("");
-      return '<section class="direct-answer"><div class="label">Direct answer</div><h3>'+esc(answer.title)+'</h3><p>'+esc(answer.text)+'</p>'+citations+'</section>';
+      const label=answer.noAnswer?"No answer found":(answer.sourceMatch?"Best source match":"Direct answer");
+      const klass=answer.noAnswer?"direct-answer no-answer":"direct-answer";
+      return '<section class="'+klass+'"><div class="label">'+label+'</div><h3>'+esc(answer.title)+'</h3><p>'+esc(answer.text)+'</p>'+citations+'</section>';
     }
     function render(query="") {
       if (!records.length) return;
@@ -398,6 +463,13 @@
         subtitle.textContent=records.length.toLocaleString()+" source passages are searchable across internal guides and public program information.";
         count.textContent=records.length.toLocaleString()+" passages";
         results.innerHTML='<div class="empty"><h3>What do you need to do?</h3><p>Ask a question in your own words. The finder puts a concise answer first and shows the source sections behind it.</p></div>';
+        return;
+      }
+      if (direct && direct.noAnswer) {
+        title.textContent="No answer found";
+        subtitle.textContent='The available guidance does not provide a complete procedure for: “'+cleanQuery+'”';
+        count.textContent="Please verify";
+        results.innerHTML=answerBox(direct);
         return;
       }
       if (direct) {
@@ -413,7 +485,7 @@
       if (!all.length) {
         count.textContent="No reliable match";
         const intent=questionIntent(cleanQuery);
-        const message=intent==="duration"?"The indexed sources do not state a duration for that program. Check the current cohort schedule or ask a case manager.":"I couldn’t find a source passage that answers that question closely enough. Try the program or workflow name, or browse by area.";
+        const message=intent==="duration"?"The indexed sources do not state a duration for that program. Check the current cohort schedule or ask a case manager.":"No answer found. Please verify with your supervisor.";
         results.innerHTML='<div class="empty"><h3>No direct answer found</h3><p>'+esc(message)+'</p></div>';
         return;
       }
@@ -421,7 +493,7 @@
       count.textContent=shown.length+" relevant source "+(shown.length===1?"passage":"passages");
       const first=shown[0], firstBody=bodyText(first.record);
       const answerText=excerptFor(firstBody,cleanQuery).excerpt;
-      const genericAnswer={title:displayTitle(first.record),text:answerText||firstBody,sources:[first.record]};
+      const genericAnswer={title:displayTitle(first.record),text:answerText||firstBody,sources:[first.record],sourceMatch:true};
       const related=shown.map(x=>card(x.record,cleanQuery)).join("");
       results.innerHTML=showConflict(cleanQuery,shown)+answerBox(genericAnswer)+'<details class="supporting-sources"><summary>See '+shown.length+' supporting source '+(shown.length===1?"passage":"passages")+'</summary>'+related+'</details>';
     }
@@ -432,7 +504,7 @@
       const sourceRecords=Array.isArray(data)?data:[];
       const groups={};sourceRecords.forEach(r=>groups[r.sourceKind]=(groups[r.sourceKind]||0)+1);
       records=prepareRecords(sourceRecords);
-      document.getElementById("sourceSummary").textContent=`Sources indexed: ${groups["Program guide"]||0} program-guide segments, ${groups["SNAP guide"]||0} SNAP guide segments, ${groups["Apricot how-to"]||0} Apricot how-to segments, ${groups["Training video"]||0} high-level summaries from three Canva videos, and ${groups["Official website"]||0} public website entries. Search hides heading-only items, table headers, diagram symbols, and repeated lines. Video notes summarize sampled captions/screens; verify exact steps in current Apricot. Public website details may be general or change; confirm exact current requirements with a case manager.`;
+      document.getElementById("sourceSummary").textContent=`Sources indexed: ${groups["Program guide"]||0} program-guide segments, ${groups["SNAP guide"]||0} SNAP guide segments, ${groups["Apricot how-to"]||0} Apricot how-to segments, ${groups["Training video"]||0} high-level summaries from three Canva videos, and ${groups["Official website"]||0} public website entries, plus ${groups["Staff clarification"]||0} staff clarifications. Search hides heading-only items, table headers, diagram symbols, and repeated lines. Video notes summarize sampled captions/screens; verify exact steps in current Apricot. Public website details may be general or change; confirm exact current requirements with a case manager.`;
       document.querySelectorAll(".filter").forEach(button=>{const filter=button.dataset.filter;const n=filter==="all"?records.length:records.filter(r=>matchesFilter(r,filter)).length;const target=button.querySelector(".count");if(target)target.textContent=n.toLocaleString();});
       render();
     }).catch(error=>{
