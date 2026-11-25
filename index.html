@@ -390,7 +390,7 @@
       if (/\b(spal|special allowance)\b/.test(q) && /\b(balance|remaining|left|used|laptop|technology|tech)\b/.test(q)) {
         return {title:"Estimating a participant’s remaining SPAL balance",text:"The lifetime maximum is $1,000. Estimate the remaining amount by subtracting prior SPAL funding that was approved or issued against the lifetime limit; requests that were not approved do not count. Category limits also apply. Have designated SNAP 50/50 staff verify the participant-specific balance before promising funds.",sources:[source("staffclar-spal-balance-20261125")].filter(Boolean)};
       }
-      if (/\b(immediate|urgent|emergency|can't afford|cannot afford|needs help|assistance|support)\b/.test(q) && /\b(transportation|food|housing|financial|clothing|snap|eligibility|student|participant)\b/.test(q)) {
+      if (/\b(immediate|urgent|emergency|can't afford|cannot afford|needs help|assistance|support)\b/.test(q) && /\b(transportation|food|housing|financial|clothing|snap|eligibility|student|participant)\b/.test(q) && !/\b(approve|approval|approver)\b/.test(q)) {
         return {title:"Referring a student who needs immediate support",text:"Refer the student to the Community Navigator for help with their needs. If the issue is a SNAP 50/50 payment problem, contact the designated SNAP 50/50 staff.",sources:[source("staffclar-support-escalation-20261125"),source("g497")].filter(Boolean)};
       }
       if (/\b(snap|spal|50 50)\b/.test(q) && /\b(payment|paid|funds)\b/.test(q) && /\b(problem|issue|missing|wrong|late)\b/.test(q)) {
@@ -452,10 +452,13 @@
       if (/\b(spal|special allowance)\b/.test(q) && /\b(clothing|uniform|work clothes)\b/.test(q)) {
         return {title:"SPAL clothing limit",text:"Up to $150 may be requested for clothing or a uniform, subject to eligibility, approval, and the participant’s remaining lifetime SPAL balance.",sources:src("g497")};
       }
+      if (/\b(spal|special allowance|snap)\b/.test(q) && /\b(car insurance|insurance premium|insurance premiums)\b/.test(q)) {
+        return {title:"SPAL does not cover car insurance",text:"SPAL does not cover car insurance premiums. Transportation assistance may include a bus pass, mileage reimbursement, or some car repairs; repair assistance varies and is not guaranteed.",sources:src("g518","g534")};
+      }
       if (/\b(spal|special allowance)\b/.test(q) && /\b(car repair|car repairs|repair|transportation|bus pass|mileage)\b/.test(q)) {
         return {title:"SPAL transportation assistance",text:"Transportation help may include a bus pass, mileage reimbursement, or some car repairs. Car-repair assistance varies and is not guaranteed; car insurance premiums are not covered. Confirm the documentation and amount with Kidary or Meralis before promising coverage.",sources:src("staffclar-spal-receipts-20261125","g497")};
       }
-      if (/\b(spal|special allowance)\b/.test(q) && /\b(receipt|receipts)\b/.test(q) && /\b(how long|deadline|days|submit|turn in)\b/.test(q)) {
+      if (/\b(receipt|receipts)\b/.test(q) && /\b(how long|deadline|days|submit|turn in|doesn t submit|does not submit|not submitted)\b/.test(q) && /\b(spal|special allowance|snap|student|participant)\b/.test(q)) {
         return {title:"SPAL receipt deadline",text:"Submit every receipt to the case manager within 14 days after purchase. If receipts are not submitted by the deadline, the participant will receive an invoice for the full funded amount and must repay it.",sources:src("staffclar-spal-receipts-20261125")};
       }
       if (/\b(spal|special allowance)\b/.test(q) && /\b(purchase|buy|buying|before|approved|approval)\b/.test(q) && /\b(can|should|student|participant|item|purchase)\b/.test(q)) {
