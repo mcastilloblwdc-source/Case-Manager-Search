@@ -381,6 +381,12 @@
       if (/\b(receipt|receipts)\b/.test(q) && /\b(lost|missing|lose|misplaced)\b/.test(q) && /\b(spal|snap|student|participant)\b/.test(q)) {
         return noAnswer("The lost-receipt procedure is not specified","The SNAP 50/50 guide says receipts not submitted within 14 days can result in an invoice for the full funded amount, which the participant must repay. It does not give a separate lost-receipt or replacement procedure. Contact designated SNAP 50/50 staff promptly.",["staffclar-spal-receipts-20261125"]);
       }
+      if (/\b(spal|special allowance)\b/.test(q) && /\b(lifetime|maximum|max|how much funding|how much money)\b/.test(q)) {
+        return {title:"SPAL lifetime maximum",text:"The maximum is $1,000 per participant over their lifetime. Check prior approved or issued SPAL funding and the remaining balance before preparing a request; category limits and approval also apply.",sources:src("g513","staffclar-spal-balance-20261125")};
+      }
+      if (/\b(spal|special allowance)\b/.test(q) && /\b(another program|other program|previous program|already used|prior use)\b/.test(q)) {
+        return {title:"SPAL used in another program",text:"The $1,000 SPAL limit is per participant over their lifetime and does not reset when the participant moves between programs. Count prior approved or issued SPAL funding, then ask designated SNAP 50/50 staff to verify the remaining balance before promising funds.",sources:src("g513","g532","staffclar-spal-balance-20261125")};
+      }
       if (/\b(spal|special allowance)\b/.test(q) && /\b(balance|remaining|left|used|laptop|technology|tech)\b/.test(q)) {
         return {title:"Estimating a participant’s remaining SPAL balance",text:"The lifetime maximum is $1,000. Estimate the remaining amount by subtracting prior SPAL funding that was approved or issued against the lifetime limit; requests that were not approved do not count. Category limits also apply. Have designated SNAP 50/50 staff verify the participant-specific balance before promising funds.",sources:[source("staffclar-spal-balance-20261125")].filter(Boolean)};
       }
@@ -393,8 +399,11 @@
       if (/\b(reimburse|reimbursement|finance|payment)\w*\b/.test(q) && /\b(student|participant|case|problem|issue|information|handles)\b/.test(q) && !/\b(snap|spal|50 50)\b/.test(q)) {
         return noAnswer("Student reimbursement and Finance procedures are not specified","The indexed guidance does not explain who handles student reimbursements or payment problems, or what information to include in a Finance request. Please verify with the supervisor or Finance.");
       }
+      if (/\bcwds\b/.test(q) && /\b(not showing|isn t showing|doesn t show|does not show|missing|appearing|can t access|cannot access|access)\b/.test(q)) {
+        return {title:"If a participant is missing from CWDS",text:"Case managers do not use CWDS. Ask the designated SNAP 50/50 staff to check the participant’s CWDS record or resolve access. If the issue is with Apricot or another system, the specific troubleshooting steps are not in the guide; contact your supervisor or system support.",sources:src("staffclar-systems-20261125")};
+      }
       if (/\b(correct|correction|incorrect|wrong|mistake|duplicate|access|can t access|cannot access|not showing|isn t showing|doesn t show|does not show|appear|appearing)\b/.test(q) && /\b(apricot|record|entry|information|system|cwds|data|profile)\b/.test(q)) {
-        return noAnswer("The correction or access procedure is not specified","The indexed guidance does not give steps for correcting an Apricot entry, resolving duplicate records, or troubleshooting access. Contact the supervisor. Case managers do not use CWDS; send CWDS lookups to designated SNAP 50/50 staff.",["staffclar-systems-20261125"]);
+        return noAnswer("The correction or access procedure is not specified","The indexed guidance does not give steps for correcting an Apricot entry, resolving duplicate records, or troubleshooting general system access. Contact the supervisor or system support. Case managers should send CWDS lookups to designated SNAP 50/50 staff.",["staffclar-systems-20261125"]);
       }
       if (/\b(urgent|escalate|escalation|unsure|not sure)\b/.test(q) && /\b(issue|problem|student|participant|guide|handle)\b/.test(q)) {
         return {title:"When to escalate a student issue",text:"Escalate an issue when the relevant guide says to do so, or when it is urgent or you are unsure how to handle it. Contact the supervisor. For SNAP 50/50 payment problems, contact the designated SNAP 50/50 staff.",sources:[source("staffclar-support-escalation-20261125")].filter(Boolean)};
@@ -432,7 +441,10 @@
         return {title:"SNAP 50/50 and ABE students",text:"An ABE student, including an ESL or HiSET participant, may be considered only if they plan to enter Workforce Training. Eligibility and funding are not guaranteed; Kidary and Meralis must confirm the referral result.",sources:src("g497")};
       }
       if (/\b(spal|special allowance)\b/.test(q) && /\b(approve|approval|approver|who)\b/.test(q)) {
-        return noAnswer("Confirm the approval route for this request","For SNAP 50/50, send the completed SPAL form to Kidary and Meralis for final approval. The guide does not name an approver for every type of student assistance; confirm other requests with the supervisor.",["g497"]);
+        return {title:"Who approves a SNAP 50/50 SPAL request?",text:"Send the completed Reverse Referral and SPAL forms to Kidary and Meralis for final approval. Do not tell the participant to purchase items until the SPAL is approved. This approval route is for SNAP 50/50; the guides do not identify an approver for every other type of assistance.",sources:src("g394","g497","g508")};
+      }
+      if (/\b(student|participant|assistance|help)\b/.test(q) && /\b(approve|approval|approver|who)\b/.test(q) && !/\b(spal|special allowance|snap|50 50)\b/.test(q)) {
+        return noAnswer("The approver depends on the type of assistance","The guidance identifies Kidary and Meralis as the final approvers for SNAP 50/50 SPAL requests. It does not name one approver for all student assistance; check the applicable program process or ask the supervisor.",["g394"]);
       }
       if (/\b(spal|special allowance)\b/.test(q) && /\b(technology|tech|device|laptop|ipad)\b/.test(q) && /\b(how much|limit|spend|cost|funding|receive|can)\b/.test(q)) {
         return {title:"SPAL technology limit",text:"A technology device, such as a laptop or iPad, may be funded up to $350, subject to eligibility, approval, and the participant’s remaining $1,000 lifetime SPAL limit.",sources:src("staffclar-spal-balance-20261125","g497")};
