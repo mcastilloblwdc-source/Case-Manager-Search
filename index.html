@@ -401,11 +401,126 @@
       }
       return null;
     }
+    function guideQuestionAnswer(q,byId) {
+      const src=(...ids)=>ids.map(id=>byId(id)).filter(Boolean);
+      const noAnswer=(title,text,ids=[])=>({title,text,noAnswer:true,sources:src(...ids)});
+      if (/\b(reverse referral|rrf)\b/.test(q) && /\b(what is|means|meaning|define)\b/.test(q)) {
+        return {title:"What the Reverse Referral is for",text:"The Reverse Referral Form starts the SNAP 50/50 referral process. Complete it with the participant along with the Authorization Form, then send both to Kidary and Meralis at least 15 days before the training start date. They check eligibility and, if eligible, send the referral to the CAO.",sources:src("g497","staffclar-systems-20261125")};
+      }
+      if (/\b(reverse referral form|rrf)\b/.test(q) && /\b(send|email|recipient|who|where)\b/.test(q)) {
+        return {title:"Where to send a Reverse Referral",text:"Email the completed Reverse Referral Form and Authorization Form to Kidary and Meralis at least 15 days before the training start date. Case managers should not email the form directly to the CAO.",sources:src("g497")};
+      }
+      if (/\b(snap jets|snap 50 50|snap)\b/.test(q) && /\b(refer|referral|eligible|eligibility)\b/.test(q) && /\b(how|process|student|participant)\b/.test(q)) {
+        return {title:"Refer a student for SNAP 50/50",text:"Confirm the student receives SNAP and is enrolled in Workforce Training; for an ABE student, confirm they plan to enter Workforce Training. Complete the Reverse Referral and Authorization Forms with the student and email them to Kidary and Meralis at least 15 days before the start date. They check eligibility in CWDS and, if eligible, forward the referral to the CAO. Approval is not guaranteed.",sources:src("g497")};
+      }
+      if (/\bcao\b/.test(q) && /\b(contact|email|call|directly)\b/.test(q) && /\b(eligibility|referral|student|participant)\b/.test(q)) {
+        return {title:"Who contacts the CAO?",text:"Case managers should not send the Reverse Referral directly to the CAO. Send the completed forms to Kidary and Meralis; they check CWDS and forward the referral to the CAO if the student is eligible.",sources:src("g497")};
+      }
+      if (/\bcao\b/.test(q) && /\b(how long|days|time|contact)\b/.test(q) && /\b(approve|approval|student|participant|decision|review)\b/.test(q)) {
+        return {title:"SNAP 50/50 review timeline",text:"CAO review may take 1–7 business days. Kidary and Meralis report the result to the case manager, who updates the student. If they have not shared a result after 7 business days, follow up with them; do not tell the student they are approved until confirmed.",sources:src("g497","g506")};
+      }
+      if (/\b(approved|approval|status)\b/.test(q) && /\b(snap|cao|referral)\b/.test(q) && /\b(know|find|when|tell|student|participant)\b/.test(q)) {
+        return {title:"How you’ll receive the SNAP decision",text:"Kidary or Meralis will report the CAO result to you. Tell the student the status only after the result is confirmed. If no result has been shared after 7 business days, follow up with Kidary or Meralis.",sources:src("g497","g506")};
+      }
+      if (/\b(denied|not approved|ineligible)\b/.test(q) && /\b(snap|student|participant|spal)\b/.test(q)) {
+        return {title:"If a SNAP 50/50 referral is not approved",text:"Kidary or Meralis will tell the case manager if the student is not eligible. Update the student and do not proceed with the SPAL request.",sources:src("g497")};
+      }
+      if (/\b(when|start|begin)\b/.test(q) && /\b(spal|special allowance)\b/.test(q) && /\b(request|prepare|process|approval|approved)\b/.test(q)) {
+        return {title:"When to start a SPAL request",text:"Begin SPAL preparation only after Kidary or Meralis confirms the SNAP referral is approved. Do not promise funding or let the student purchase items before SPAL approval.",sources:src("g497","staffclar-snap-pending-20261125")};
+      }
+      if (/\b(abe|esl|hiset|ged)\b/.test(q) && /\b(snap|qualify|eligible|eligibility)\b/.test(q)) {
+        return {title:"SNAP 50/50 and ABE students",text:"An ABE student, including an ESL or HiSET participant, may be considered only if they plan to enter Workforce Training. Eligibility and funding are not guaranteed; Kidary and Meralis must confirm the referral result.",sources:src("g497")};
+      }
+      if (/\b(spal|special allowance)\b/.test(q) && /\b(approve|approval|approver|who)\b/.test(q)) {
+        return noAnswer("Confirm the approval route for this request","For SNAP 50/50, send the completed SPAL form to Kidary and Meralis for final approval. The guide does not name an approver for every type of student assistance; confirm other requests with the supervisor.",["g497"]);
+      }
+      if (/\b(spal|special allowance)\b/.test(q) && /\b(technology|tech|device|laptop|ipad)\b/.test(q) && /\b(how much|limit|spend|cost|funding|receive|can)\b/.test(q)) {
+        return {title:"SPAL technology limit",text:"A technology device, such as a laptop or iPad, may be funded up to $350, subject to eligibility, approval, and the participant’s remaining $1,000 lifetime SPAL limit.",sources:src("staffclar-spal-balance-20261125","g497")};
+      }
+      if (/\b(spal|special allowance)\b/.test(q) && /\b(clothing|uniform|work clothes)\b/.test(q)) {
+        return {title:"SPAL clothing limit",text:"Up to $150 may be requested for clothing or a uniform, subject to eligibility, approval, and the participant’s remaining lifetime SPAL balance.",sources:src("g497")};
+      }
+      if (/\b(spal|special allowance)\b/.test(q) && /\b(car repair|car repairs|repair|transportation|bus pass|mileage)\b/.test(q)) {
+        return {title:"SPAL transportation assistance",text:"Transportation help may include a bus pass, mileage reimbursement, or some car repairs. Car-repair assistance varies and is not guaranteed; car insurance premiums are not covered. Confirm the documentation and amount with Kidary or Meralis before promising coverage.",sources:src("staffclar-spal-receipts-20261125","g497")};
+      }
+      if (/\b(spal|special allowance)\b/.test(q) && /\b(receipt|receipts)\b/.test(q) && /\b(how long|deadline|days|submit|turn in)\b/.test(q)) {
+        return {title:"SPAL receipt deadline",text:"Submit every receipt to the case manager within 14 days after purchase. If receipts are not submitted by the deadline, the participant will receive an invoice for the full funded amount and must repay it.",sources:src("staffclar-spal-receipts-20261125")};
+      }
+      if (/\b(spal|special allowance)\b/.test(q) && /\b(purchase|buy|buying|before|approved|approval)\b/.test(q) && /\b(can|should|student|participant|item|purchase)\b/.test(q)) {
+        return {title:"Do not purchase before SPAL approval",text:"The participant must wait until the SPAL is approved before buying items. Purchases must match the approved SPAL; do not promise eligibility or funding before approval.",sources:src("g497","staffclar-snap-pending-20261125")};
+      }
+      if (/\b(spal|special allowance)\b/.test(q) && /\b(transportation|technology|laptop|bus pass)\b/.test(q) && /\b(both|and|also|plus)\b/.test(q)) {
+        return {title:"Requesting more than one SPAL category",text:"A participant may request eligible items from more than one category if the combined request fits the remaining lifetime balance and each category limit. Transportation support and technology are subject to eligibility and approval; verify the balance with designated SNAP 50/50 staff.",sources:src("staffclar-spal-balance-20261125","g497")};
+      }
+      if (/\b(students|student|participant)\b/.test(q) && /\b(eligible|qualify|program|requirements)\b/.test(q) && /\b(which|determine|what|program)\b/.test(q)) {
+        return {title:"Screening a student for program eligibility",text:"Check age (18+), Berks County residency, class availability, schedule and attendance commitment, language proficiency, accommodations, basic documents, barriers, and the specific program’s entry requirements. Confirm exact requirements for the program before advising the student.",sources:src("g81","g392")};
+      }
+      if (/\b(register|new student|intake|enroll)\b/.test(q) && /\b(student|participant|how|where)\b/.test(q) && !/\b(snap|spal)\b/.test(q)) {
+        return {title:"Start a new participant intake",text:"In Apricot, search Participant Demographics first to avoid creating a duplicate profile. Create a profile if none exists, or verify and update the existing one. Complete the Universal Intake/Application and required forms, upload clear documents, and link the Request for Services to the participant profile.",sources:src("g85","g65","g81")};
+      }
+      if (/\b(document|documents|forms|collect|photo id|insurance)\b/.test(q) && /\b(intake|interview|enrollment|student|participant)\b/.test(q) && !/\b(case note|attendance)\b/.test(q)) {
+        return {title:"Documents for Workforce Training intake",text:"Before the entrance interview, complete the Universal Intake/Application, Workforce Pre-Screening Form, and participant-completed Scholarship Form. Upload a clear photo ID; Allied Health applicants also need health insurance and program documents. Verify any additional program-specific requirements before scheduling.",sources:src("g85","g86","g394")};
+      }
+      if (/\b(missing|incomplete|not have|doesn't have|does not have)\b/.test(q) && /\b(document|documents|form|forms|intake|interview|enrollment)\b/.test(q)) {
+        return {title:"If required enrollment documents are missing",text:"Do not schedule the Workforce Training interview or add the student to the waitlist until required forms and documents are complete and verified. Help the student complete or submit the missing item, then review the file again.",sources:src("g81","g105","g394")};
+      }
+      if (/\b(english|language|proficiency)\b/.test(q) && /\b(requirements|requirement|doesn't meet|does not meet|below|minimum|score)\b/.test(q)) {
+        return {title:"If a student does not meet the English requirement",text:"Administer the required English proficiency test. If the student does not reach the program’s minimum score, refer them to ESL before considering them for admission.",sources:src("g81","g392")};
+      }
+      if (/\b(previously attended|attended before|returning student|prior student|existing student)\b/.test(q) && /\b(tec centro|profile|intake|student|participant)\b/.test(q)) {
+        return {title:"Check whether a student already has an Apricot profile",text:"Before creating a new profile, search for the participant under Apricot Participant Demographics. A returning student does not need a new intake; update the existing Apricot record if important information has changed.",sources:src("staffclar-enrollment-20261125","g65")};
+      }
+      if (/\b(withdraw|withdrawal|leave the program)\b/.test(q) && /\b(student|participant|before|class|classes|program)\b/.test(q)) {
+        return {title:"Record a student withdrawal",text:"In Apricot, enter Withdrawal in Student Profile → View Folder → [INTAKE] Program Enrollment Exit Section. Add full details in Exit Notes, notify the Program Supervisor immediately, and terminate the program enrollment.",sources:src("g151","g410")};
+      }
+      if (/\b(attendance)\b/.test(q) && /\b(where|enter|record|update|system)\b/.test(q)) {
+        return {title:"Where to enter attendance",text:"For Workforce Training, case managers enter attendance electronically in Apricot → Classes & Terms and upload signed weekly attendance sheets to the cohort’s Teams folder every Friday. For ABE, instructors enter attendance in Apricot → Classes & Terms; case managers collect and upload the signed sheets weekly.",sources:src("g140","g250")};
+      }
+      if (/\b(attendance|absences|absent)\b/.test(q) && /\b(how often|frequency|weekly|update|contact|when)\b/.test(q)) {
+        return {title:"Attendance review and follow-up",text:"Review attendance weekly and follow up when a student is absent. Follow up immediately when an enrolled student misses Welcome Orientation or does not show on the first day. Document follow-up in Apricot; collect and upload signed attendance sheets every Friday for Workforce Training and weekly for ABE.",sources:src("g140","g250")};
+      }
+      if (/\b(attendance|absences|absent)\b/.test(q) && /\b(document|note|issue|concern|incident)\b/.test(q)) {
+        return {title:"Document attendance concerns",text:"Document follow-up communications in Apricot → Classes & Terms. Record attendance-related progress, concerns, or incidents in Apricot → Student Profile → View Folder → [IN CLASS] Progress and Incident Notes.",sources:src("g140","g147")};
+      }
+      if (/\b(progress|progress notes|academic progress)\b/.test(q) && /\b(document|record|where|student|participant)\b/.test(q)) {
+        return {title:"Document student progress",text:"Record case-management interactions in Apricot → Student Profile → View Folder → Services / Case Notes. For attendance-related progress, concerns, or incidents, use [IN CLASS] Progress and Incident Notes. For Workforce Training goals, update the Short- & Long-Term Goals form and Career/Employment Plan.",sources:src("g147","g316")};
+      }
+      if (/\b(case note|case notes|service note|service notes|phone call|contact attempt)\b/.test(q) && /\b(where|enter|document|include|information|how often|phone|unsuccessful|no answer|call)\b/.test(q)) {
+        return {title:"Write a case note in Apricot",text:"Use Student Profile → View Folder → Services / Case Notes. Record the contact date, method (phone, email, text, etc.), participant response, and any interview, referral, or employment-status updates. Document each interaction and follow-up attempt; for a website-request attempt, enter the date, time, method, and outcome in Apricot on the day it occurs.",sources:src("g316","g54")};
+      }
+      if (/\b(same information|same data|multiple systems|more than one system|duplicate entry)\b/.test(q)) {
+        return noAnswer("There is no general duplicate-entry rule in the guidance","The guide assigns different records to Apricot and Teams, but does not state a general rule for entering the same information in multiple systems. Follow the specific workflow for the program and ask the supervisor if a record appears duplicated.",["g140","g250"]);
+      }
+      if (/\b(graduat|complete|completion)\w*\b/.test(q) && /\b(student|program|case|credential|certificate|where|record|do)\b/.test(q) && !/\b(employment|job|follow up|followup)\b/.test(q)) {
+        return {title:"Record program completion and credentials",text:"In Apricot → Student Profile → View Folder → [INTAKE] Program Enrollment, select Successfully Completed Program and use the last day of class as the completion date. Record certifications in [CLASS COMPLETE] Training and Certification Tracking and upload the certificate.",sources:src("g165","g410")};
+      }
+      if (/\b(close|closing|end)\b/.test(q) && /\b(case|student|participant|program)\b/.test(q) && /\b(graduat|complete|withdraw)\w*\b/.test(q)) {
+        return {title:"Close the program enrollment",text:"For a graduate, record Successfully Completed Program in Apricot Program Enrollment using the last day of class as the completion date. For a withdrawal, record Withdrawal, complete Exit Notes, notify the Program Supervisor, and terminate the enrollment.",sources:src("g151","g410")};
+      }
+      if (/\b(certification|certifications|credential|credentials|certificate|certificates|ged|hiset)\b/.test(q) && /\b(document|record|upload|earned)\b/.test(q)) {
+        return {title:"Record certifications and credentials",text:"Use Apricot → Student Profile → View Folder → [CLASS COMPLETE] Training and Certification Tracking to record the credential and date earned. Upload the certificate or supporting documentation to the participant’s file.",sources:src("g165","g254")};
+      }
+      if (/\b(employment status|job placement|employment record|gets a job|finds a job|job offer)\b/.test(q) && /\b(record|document|information|what|where|status|collect|job)\b/.test(q)) {
+        return {title:"Record a participant’s new job",text:"In Apricot, open Student Profile → View Folder → [EMPLOYMENT] Job Placement/Employment Retention Tracking and create an Employment Record. Enter employer name, job title, start date, hourly wage or income, employment status, and other relevant placement details.",sources:src("g318","g167")};
+      }
+      if (/\b(graduat|graduate|training)\w*\b/.test(q) && /\b(not hired|not find employment|unemployed|doesn't find|does not find|no job)\b/.test(q)) {
+        return {title:"Support a graduate who has not found a job",text:"Proactively contact the graduate, schedule an Employment Services appointment, continue job-search help and referrals, and document follow-up until employment is obtained or services are no longer needed.",sources:src("g330","g454")};
+      }
+      if (/\b(employment assistance|employment services|job search|referral)\b/.test(q) && /\b(after graduation|graduate|document|follow up|job)\b/.test(q)) {
+        return {title:"Document post-graduation employment support",text:"Refer graduates needing job-placement or career guidance to the Employment Specialist by email, copying the Program Supervisor and Operations Director. Record employment and retention updates in Apricot → [EMPLOYMENT] Job Placement/Employment Retention Tracking; document follow-up contacts in Services / Case Notes.",sources:src("g167","g318")};
+      }
+      if (/\b(program requirement|program requirements|entry requirement|entry requirements)\b/.test(q) && /\b(who|contact|question|ask)\b/.test(q)) {
+        return {title:"Who to contact about program requirements",text:"Ask the Program Supervisor for program-specific guidance. The guide also lists the ABE Coordinator and Director of Recruitment and Enrollment as contacts for questions within their areas.",sources:src("g81","g875")};
+      }
+      return null;
+    }
     function curatedAnswer(query) {
       const q=norm(query), intent=questionIntent(query);
       const byId=id=>records.find(r=>r.id===id);
       const staffAnswer=staffClarificationAnswer(q,byId);
       if (staffAnswer) return staffAnswer;
+      const guideAnswer=guideQuestionAnswer(q,byId);
+      if (guideAnswer) return guideAnswer;
       if (intent==="howto" && /\b(case notes?|service notes?)\b/.test(q)) {
         return {title:"Add a case note in Apricot",text:"Open the participant’s Apricot profile and go to Student Profile → View Folder → Services / Case Notes. Document the case-management interaction there. For Employment Services follow-up notes, include the contact date, method (phone, email, text, etc.), the participant’s response, and any interview, referral, or employment-status updates.",sources:[byId("g147"),byId("g316")].filter(Boolean)};
       }
